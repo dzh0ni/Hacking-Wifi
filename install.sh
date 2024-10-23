@@ -1,14 +1,13 @@
 #!/bin/bash
 
 cd /opt
-sudo rm -rf Kali-linux_drivers_and_tools_checker
-sudo git clone https://github.com/JennValentine/Kali-linux_drivers_and_tools_checker.git
-sudo chmod +x Kali-linux_drivers_and_tools_checker/*
-cd Kali-linux_drivers_and_tools_checker
-ls -lthas
+sudo rm -rf Hacking-Wifi
+sudo git clone git@github.com:AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi.git
+sudo chmod +x Hacking-Wifi/*
+cd Hacking-Wifi
+ls -ltha
 cd 
-sudo echo "cd /opt/Kali-linux_drivers_and_tools_checker && sudo ./kalilinuxdrivertools.sh" > kalilinuxdrivertools
-sudo chmod +x kalilinuxdrivertools
-sudo rm -rf /usr/local/bin/kalilinuxdrivertools
-sudo mv kalilinuxdrivertools /usr/local/bin/
+sudo echo "cd /opt/Hacking-Wifi && sudo ./menu.sh" > hackingwifi
+sudo chmod +x hackingwifi
+sudo mv hackingwifi /usr/local/bin/
 cd
