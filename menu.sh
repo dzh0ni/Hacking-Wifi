@@ -369,7 +369,7 @@ function tool_feedingbottle() {
     sudo fluid -c feedingbottle.fl
     sudo fltk-config --compile feedingbottle.cxx
     sudo chmod +x feedingbottle
-    #--- sudo wget -O feedingbottle https://github.com/JennValentine/Kali-linux_drivers_and_tools_checker/raw/main/Herramientas/feedingbottle/Install/feedingbottle
+    #--- sudo wget -O feedingbottle https://github.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi/raw/main/Herramientas/feedingbottle/Install/feedingbottle
     #--- sudo ./feedingbottle
     cd
     echo "cd /opt/feedingbottle && sudo ./feedingbottle" > feedingbottle 
@@ -386,7 +386,7 @@ function tool_handshaker() {
 
     cd /opt
     sudo rm -rf Handshaker
-    sudo cp -r /opt/Kali-linux_drivers_and_tools_checker/Herramientas/Handshaker/ /opt/
+    sudo cp -r /opt/Hacking-Wifi/Herramientas/Handshaker/ /opt/
     sudo chmod +x Handshaker/*
     cd Handshaker
     sudo mkdir handshake
