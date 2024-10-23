@@ -482,7 +482,57 @@ function forces_audio() {
 function check_extras() {
    echo -e "\n${info} Check extras.......${reset}"
 
-    essential_tools=("aircrack-ng" "airgeddon" "cowpatty" "mdk3" "pixiewps" "reaver" "sparrow-wifi" "fern-wifi-cracker" "wireshark" "kismet" "eaphammer" "wifi-honey" "routersploit" "wifite" "xterm")
+    # essential_tools=("aircrack-ng" "airgeddon" "cowpatty" "mdk3" "pixiewps" "reaver" "sparrow-wifi" "fern-wifi-cracker" "wireshark" "kismet" "eaphammer" "wifi-honey" "routersploit" "wifite" "xterm")
+
+    essential_tools=(
+    "aircrack-ng" 
+    "airgeddon" 
+    "awk" 
+    "bc" 
+    "bettercap" 
+    "bully" 
+    "cowpatty" 
+    "curl" 
+    "crunch" 
+    "dhcpd" 
+    "dnsmasq" 
+    "dsniff" 
+    "ettercap" 
+    "etterlog" 
+    "fern-wifi-cracker" 
+    "fuser" 
+    "hashcat" 
+    "hcxdumptool" 
+    "hostapd" 
+    "hostapd-wpe" 
+    "iw" 
+    "iwconfig" 
+    "killall" 
+    "kismet" 
+    "lighttpd" 
+    "mdk3" 
+    "mdk4" 
+    "nmap" 
+    "nft" 
+    "openssl" 
+    "packetforge-ng" 
+    "php-cgi" 
+    "pixiewps" 
+    "reaver" 
+    "rfkill" 
+    "route" 
+    "sparrow-wifi" 
+    "tcpdump" 
+    "tshark" 
+    "unzip" 
+    "wireshark" 
+    "wifite" 
+    "xterm" 
+    "eaphammer" 
+    "wifi-honey" 
+    "routersploit" 
+)
+
 
     # Comprobar herramientas esenciales
     echo -e "\n${info} Herramientas esenciales: ${magenta}comprobando...${reset}\n"
