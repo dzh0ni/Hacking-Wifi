@@ -161,7 +161,13 @@ function paquetes() {
     # Actualizar paquetes instalados
     echo -e "\n${info} Actualizar paquetes instalados (full-upgrade)......${reset}\n"
     sudo apt-get -y full-upgrade
-    echo -e "\n${info} ${blue}Full-upgrade completado.${reset}"
+    echo -e "\n${info} ${blue}Sistema actualizado.${reset}"
+}
+
+function linuxbuild() {
+    echo -e "\n${info} Instalar build-essential dkms linux-headers-$(uname -r).......${reset}\n"
+    sudo apt-get install -y build-essential dkms linux-headers-$(uname -r)
+    echo -e "\n${info} ${blue}Sistema actualizado${reset}"
 }
 
 # Funciones para los controladores
@@ -514,11 +520,12 @@ fun_banner
 
 echo -e "\n${yellow}Seleccione una opción del menú:${reset}\n"
 echo -e "${blue}-------------- ( update ) --------------${reset}"
-echo -e "${green}r. ${white} Actualizar el sistema${reset}"
-echo -e "${green}p. ${white} Full-upgrade del sistema${reset}"
+echo -e "${green}R. ${white} Actualizar el sistema${reset}"
+echo -e "${green}P. ${white} Full-upgrade del sistema${reset}"
 echo -e "${blue}-------------- ( Diccionario ) --------------${reset}"
-echo -e "${green}d. ${white} Crear Diccionario personalizado${reset}"
+echo -e "${green}D. ${white} Crear Diccionario personalizado${reset}"
 echo -e "${blue}-------------- ( Driver ) --------------${reset}"
+echo -e "${green}C. ${white} Paquetes Esenciales para Compilación${reset}"
 echo -e "${green}1. ${white} Driver rtl8188eus${reset}"
 echo -e "${green}2. ${white} Driver rtl8814au${reset}"
 echo -e "${green}3. ${white} Driver rtl8723cs${reset}"
@@ -546,18 +553,22 @@ echo -e "\n${barra}"
 echo -ne "\n${bold}${yellow} Elige una opción:${white} >> "; read x
 
 case $x in
-  r) 
+  r | R) 
     repositorios 
     echo -ne "\n${bold}${red}ENTER ${yellow}para volver a ${green}MENU!${reset}"; read
     ;;
-  p) 
+  p | P) 
     paquetes
     echo -ne "\n${bold}${red}ENTER ${yellow}para volver a ${green}MENU!${reset}"; read
     ;;
-  d)
+  d | D)
     echo -e "\n${process} ${cyan}Creando diccionario personalizado...${reset}"
     crear_diccionario
     echo -ne "\n${bold}${red}ENTER ${yellow}para volver al ${green}MENU!${reset}"; read
+    ;;
+  c | C) 
+    linuxbuild
+    echo -ne "\n${bold}${red}ENTER ${yellow}para volver a ${green}MENU!${reset}"; read
     ;;
   1) 
     driver_rtl8188eus 
