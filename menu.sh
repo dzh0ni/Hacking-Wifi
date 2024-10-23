@@ -71,6 +71,21 @@ fun_banner() {
     echo ""
 }
 
+# Función de actualización
+P_SERVER="https://raw.githubusercontent.com/AAAAAEXQOSyIpN2JZ0ehUQ/Wifite-Utility/main/Install/"
+v1=$(curl -sSL "${P_SERVER}/versionact")
+v2=$(cat /opt/Wifite-Utility/Install/versionact)
+
+txt01="Tu versión está actualizada"
+txt02="¡Hay una actualización disponible!"
+
+# Compara las versiones y define el mensaje
+if [[ $v1 = $v2 ]]; then
+    versionSCT="${green}${txt01} ${cyan}$v2${reset}"
+else
+    versionSCT="${red}${txt02} ${cyan}$v1${reset}"
+fi
+
 # Función para comprobar y, si es necesario, instalar la presencia de una herramienta
 check_and_install_tool() {
     tool=$1
@@ -87,6 +102,51 @@ check_and_install_tool() {
         else
             echo -e "\n${error} ${yellow}No se pudo instalar ${white}$tool ${yellow}Por favor, instálalo manualmente.${reset}"
         fi
+    fi
+}
+
+# Función para crear el diccionario
+crear_diccionario() {
+    # Ruta del archivo de salida donde se almacenará el diccionario final
+    local output_file="/usr/share/wordlists/defaultWordList.txt"
+
+    # Verificar si el diccionario ya existe para evitar sobrescribirlo
+    if [[ ! -f "$output_file" ]]; then
+        echo -e "\n${info} Creando diccionario.....${reset}\n"
+
+        # Descomprimir el archivo rockyou.txt.gz si aún no ha sido descomprimido
+        sudo apt install -y wordlists
+        if [[ ! -f "/usr/share/wordlists/rockyou.txt" ]]; then
+            sudo gzip -d /usr/share/wordlists/rockyou.txt.gz
+        fi
+
+        # Combinar varias listas de palabras en un solo archivo temporal
+        cat /usr/share/set/src/fasttrack/wordlist.txt \
+            /usr/share/john/password.lst \
+            /usr/share/nmap/nselib/data/passwords.lst \
+            /usr/share/wordlists/rockyou.txt \
+            /usr/share/sqlmap/data/txt/wordlist.txt \
+            /usr/share/dict/wordlist-probable.txt > diccionario_combinado.txt
+
+        # Ordenar las palabras en el archivo combinado y eliminar duplicados
+        sort diccionario_combinado.txt | uniq > diccionario_sin_duplicados.txt
+
+        # Filtrar las palabras con 8 caracteres o más y guardarlas en el archivo final
+        grep -E '\b\w{8,}\b' diccionario_sin_duplicados.txt > "$output_file"
+
+        # Asignar permisos de ejecución al diccionario final (aunque no es estrictamente necesario)
+        sudo chmod +x "$output_file"
+        
+        # Eliminar los archivos temporales utilizados en el proceso
+        sudo rm -rf diccionario_combinado.txt diccionario_sin_duplicados.txt
+
+        # Contar y mostrar el número total de palabras en el diccionario final
+        wc -l "$output_file"
+
+        echo -e "\n${info} Diccionario creado en ${output_file}${reset}\n"
+    else
+        # Si el diccionario ya existe, se muestra un mensaje de advertencia
+        echo -e "\n${error} El archivo ${output_file} ya existe.${reset}\n"
     fi
 }
 
@@ -456,6 +516,8 @@ echo -e "\n${yellow}Seleccione una opción del menú:${reset}\n"
 echo -e "${blue}-------------- ( update ) --------------${reset}"
 echo -e "${green}r. ${white} Actualizar el sistema${reset}"
 echo -e "${green}p. ${white} Full-upgrade del sistema${reset}"
+echo -e "${blue}-------------- ( Diccionario ) --------------${reset}"
+echo -e "${green}d. ${white} Crear Diccionario personalizado${reset}"
 echo -e "${blue}-------------- ( Driver ) --------------${reset}"
 echo -e "${green}1. ${white} Driver rtl8188eus${reset}"
 echo -e "${green}2. ${white} Driver rtl8814au${reset}"
@@ -475,7 +537,10 @@ echo -e "${green}13.${white} Forces Audio${reset}"
 echo -e "${blue}-------------- ( Check ) --------------${reset}"
 echo -e "${green}14.${white} Check extras${reset}"
 echo -e "${green}15.${white} Información del Sistema y Red${reset}"
-echo -e "${green}0. ${white} Salir${reset}"
+echo -e "${bar}"
+echo -e "${green}16 $versionSCT${reset}"
+echo -e "${bar}"
+echo -e "${green}0  ${white}Salir${reset}"
 echo -e "\n${barra}"
 
 echo -ne "\n${bold}${yellow} Elige una opción:${white} >> "; read x
@@ -488,6 +553,11 @@ case $x in
   p) 
     paquetes
     echo -ne "\n${bold}${red}ENTER ${yellow}para volver a ${green}MENU!${reset}"; read
+    ;;
+  d)
+    echo -e "\n${process} ${cyan}Creando diccionario personalizado...${reset}"
+    crear_diccionario
+    echo -ne "\n${bold}${red}ENTER ${yellow}para volver al ${green}MENU!${reset}"; read
     ;;
   1) 
     driver_rtl8188eus 
@@ -549,6 +619,12 @@ case $x in
     echo -e "\n${process} ${cyan}Información del Sistema y Red...${reset}"
     data_system 
     echo -ne "\n${bold}${red}ENTER ${yellow}para volver al ${green}MENÚ!${reset}"; read
+    ;;
+  16)
+    echo -e "\n${process} ${cyan}Actualizando Script...${reset}\n"
+    sudo wget https://raw.githubusercontent.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi/refs/heads/main/install.sh -O - | sudo bash
+    sudo rm -rf wget-log*
+    echo -ne "\n${bold}${red}ENTER ${yellow}para volver al ${green}MENU!${reset}"; read
     ;;
   0)
     echo -e "\n${info} ${cyan}Saliendo...${reset}"
