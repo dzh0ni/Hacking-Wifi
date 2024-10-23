@@ -1,37 +1,37 @@
 ![logo](https://edteam-media.s3.amazonaws.com/blogs/big/2ab53939-9b50-47dd-b56e-38d4ba3cc0f0.png)
 
-# Kali Linux - Drivers and Tools Checker
+# Hacking-Wifi
+**Kali linux - drivers y herramientas para hacking Wifi**
 
 ## :information_source: Descripción
-El script Kali Linux - Drivers and Tools Checker está diseñado para automatizar la 
+Kali linux - drivers y herramientas para hacking Wifi está diseñado para automatizar la 
 instalación y verificación de diversos controladores y herramientas esenciales para 
-la auditoría de seguridad en Kali Linux. El objetivo principal es asegurar que todos 
+la auditoría de seguridad de redes wifi. El objetivo principal es asegurar que todos 
 los componentes necesarios estén instalados y configurados correctamente para 
-realizar auditorías de red y pruebas de penetración.
+realizar auditorías de redes wifi y pruebas de penetración.
 
 ## :computer: Instalación
 ```bash
 cd /opt
-sudo rm -rf Kali-linux_drivers_and_tools_checker
-sudo git clone https://github.com/JennValentine/Kali-linux_drivers_and_tools_checker.git
-sudo chmod +x Kali-linux_drivers_and_tools_checker/*
-cd Kali-linux_drivers_and_tools_checker
-ls -lthas
+sudo rm -rf Hacking-Wifi
+sudo git clone git@github.com:AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi.git
+sudo chmod +x Hacking-Wifi/*
+cd Hacking-Wifi
+ls -ltha
 ```
 
 ## :key: Acceso Directo
 ```bash
 cd 
-sudo echo "cd /opt/Kali-linux_drivers_and_tools_checker && sudo ./kalilinuxdrivertools.sh" > kalilinuxdrivertools
-sudo chmod +x kalilinuxdrivertools
-sudo rm -rf /usr/local/bin/kalilinuxdrivertools
-sudo mv kalilinuxdrivertools /usr/local/bin/
+sudo echo "cd /opt/Hacking-Wifi && sudo ./menu.sh" > hackingwifi
+sudo chmod +x hackingwifi
+sudo mv hackingwifi /usr/local/bin/
 cd
 ```
 
 ## :computer: Instalación en una Línea
 ```bash
-wget https://raw.githubusercontent.com/JennValentine/Kali-linux_drivers_and_tools_checker/main/install.sh; sudo chmod +x install.sh; sudo ./install.sh; sudo rm -rf install.sh
+wget https://raw.githubusercontent.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi/refs/heads/main/install.sh -O - | sudo bash
 ```
 
 ## :rocket: Modo de Uso
@@ -39,13 +39,8 @@ wget https://raw.githubusercontent.com/JennValentine/Kali-linux_drivers_and_tool
 Ejecutar el scrip:
 
 ```bash
-sudo kalilinuxdrivertools
+hackingwifi
 ```
-![logo](https://github.com/JennValentine/Kali-linux_drivers_and_tools_checker/blob/main/Imagenes/kalilinuxdrivertools.jpg)
-:memo: Notas: Al ejecutar el script, se solicita la confirmación del usuario para cada paso crítico, 
-como la actualización de repositorios y la instalación de herramientas opcionales. 
-Esto proporciona control al usuario sobre las acciones que se van a realizar en el 
-sistema.
 
 ## :star2: Características y Funcionalidades Principales
 
@@ -56,7 +51,7 @@ sistema.
 2 - Actualización de Repositorios y Paquetes:
 
 * Opción para actualizar los repositorios (apt-get update).
-* Opción para actualizar los paquetes instalados (apt-get upgrade).
+* Opción para actualizar los paquetes instalados (apt-get full-upgrade).
 
 3 - Instalación de Controladores de Red:
 
@@ -69,7 +64,7 @@ sistema.
 5 - Instalación y Verificación de Herramientas Esenciales y Opcionales:
 
 * Verificación e instalación de herramientas esenciales como git, aircrack-ng, wifite, hcxdumptool, pyrit, airgeddon, fluxion, entre otras.
-* Instalación de herramientas adicionales como sparrow-wifi, feedingbottle, lazyaircrack, y Wifi-Hack.
+* Instalación de herramientas adicionales como sparrow-wifi, feedingbottle, lazyaircrack, y Wifi-Hack, entre otras.
 
 6 - Configuración y Creación de Diccionarios de Contraseñas:
 
@@ -84,10 +79,30 @@ sistema.
 
 Este script es una herramienta poderosa para cualquier profesional de la seguridad 
 informática que utilice Kali Linux, ya que simplifica y automatiza muchas de las 
-tareas comunes de configuración y actualización necesarias para una auditoría de 
-seguridad eficaz.
+tareas comunes de configuración y actualización necesarias para una auditorías de redes wifi y pruebas de penetración.
 
-:bookmark_tabs: Disfruta utilizando el script y mantén tu sistema Kali Linux actualizado y listo para su uso en pruebas de seguridad en redes! 
+## :open_file_folder: Estructura del Repositorio
 
-## :email: Contacto
-* :busts_in_silhouette: [Jenn Valentine](https://t.me/JennValentine) - Update Contributor :octocat:
+| Icono            | Nombre              | Descripción                               |
+|------------------|---------------------|-------------------------------------------|
+| :file_folder:    | Desarrollador       | Carpeta de Desarrollador del proyecto     |
+| :file_folder:    | Herramientas        | Carpeta de herramientas extras            |
+| :file_folder:    | Imágenes            | Carpeta para imágenes del proyecto        |
+| :page_facing_up: | .gitattributes      | Archivo para configuración de Git         |
+| :page_facing_up: | LICENSE             | Archivo de licencia del proyecto          |
+| :book:           | README.md           | Archivo de documentación principal        |
+| :package:        | install.sh          | Script de instalación automatizada        |
+| :page_facing_up: | menu.sh             | Herramienta de utilidades                 |
+
+## :star2: Contribuciones
+
+Las contribuciones son bienvenidas. Si tienes ideas para mejorar este script o encuentras algún problema, siéntete libre de abrir un *pull request* o *issue*.
+
+## :warning: Advertencias
+
+- Uso Responsable: Este script está diseñado para ser utilizado en dispositivos y redes que te pertenecen o para las que tienes permiso de uso. No lo utilices para actividades no autorizadas.
+
+## :email: Contacto 
+* :busts_in_silhouette: **Dzhoni**: [GitHub](https://github.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi) - Desarrollador Hacking-Wifi
+
+? https://t.me/AAAAAEXQOSyIpN2JZ0ehUQ [  ???? ] ?
