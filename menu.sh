@@ -72,7 +72,7 @@ fun_banner() {
 }
 
 # Función de actualización
-P_SERVER="nt.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi/refs/heads/main/Install/"
+P_SERVER="https://raw.githubusercontent.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi/refs/heads/main/Install/"
 v1=$(curl -sSL "${P_SERVER}/versionact")
 v2=$(cat /opt/Hacking-Wifi/Install/versionact)
 
