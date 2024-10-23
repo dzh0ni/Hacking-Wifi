@@ -1,4 +1,4 @@
-![logo](https://edteam-media.s3.amazonaws.com/blogs/big/2ab53939-9b50-47dd-b56e-38d4ba3cc0f0.png)
+![logo](https://github.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi/blob/main/Imagenes/hacking-wifi.png)
 
 # Hacking-Wifi
 **Kali linux - drivers y herramientas para hacking Wifi**
