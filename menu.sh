@@ -1,10 +1,10 @@
 #!/bin/bash
 #====================================================
-#   SCRIPT:                   Kali linux - drivers and tools checker
+#   SCRIPT:                   Hacking-Wifi | Kali linux - drivers y herramientas para hacking Wifi
 #   DESARROLLADO POR:         Jony Rivera (Dzhoni)
 #   FECHA DE ACTUALIZACIÓN:   07-05-2024  
 #   CONTACTO POR TELEGRAMA:   https://t.me/Dzhoni_dev
-#   GITHUB OFICIAL:           https://github.com/AAAAAEXQOSyIpN2JZ0ehUQ/xxxxxxxxxxxxxxxxxxx
+#   GITHUB OFICIAL:           https://github.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi
 #====================================================
 x="ok"
 
