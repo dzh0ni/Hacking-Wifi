@@ -14,7 +14,7 @@ realizar auditorías de redes wifi y pruebas de penetración.
 ```bash
 cd /opt
 sudo rm -rf Hacking-Wifi
-sudo git clone git@github.com:AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi.git
+sudo git clone https://github.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi.git
 sudo chmod +x Hacking-Wifi/*
 cd Hacking-Wifi
 ls -ltha
@@ -31,7 +31,7 @@ cd
 
 ## :computer: Instalación en una Línea
 ```bash
-wget https://raw.githubusercontent.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi/refs/heads/main/install.sh -O - | sudo bash
+sudo wget https://raw.githubusercontent.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi/refs/heads/main/install.sh -O - | sudo bash
 ```
 
 ## :rocket: Modo de Uso
