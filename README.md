@@ -103,4 +103,4 @@ Las contribuciones son bienvenidas. Si tienes ideas para mejorar este script o e
 - Uso Responsable: Este script está diseñado para ser utilizado en dispositivos y redes que te pertenecen o para las que tienes permiso de uso. No lo utilices para actividades no autorizadas.
 
 ## :email: Contacto 
-* :busts_in_silhouette: **Dzh0nini**: [GitHub](https://github.com/dzh0ni/Hacking-Wifi) - Desarrollador Hacking-Wifi
+* :busts_in_silhouette: **Dzh0ni**: [Telegram](https://t.me/Dzh0ni_Dev) - Desarrollador Hacking-Wifi
