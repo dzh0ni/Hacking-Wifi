@@ -1,4 +1,4 @@
-﻿![logo](https://github.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi/blob/main/Imagenes/hacking-wifi.png)
+﻿![logo](https://github.com/dzh0ni/Hacking-Wifi/blob/main/Imagenes/hacking-wifi.png)
 
 # Hacking-Wifi
 **Kali linux - drivers y herramientas para hacking Wifi**
@@ -14,7 +14,7 @@ realizar auditorías de redes wifi y pruebas de penetración.
 ```bash
 cd /opt
 sudo rm -rf Hacking-Wifi
-sudo git clone https://github.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi.git
+sudo git clone https://github.com/dzh0ni/Hacking-Wifi.git
 sudo chmod +x Hacking-Wifi/*
 cd Hacking-Wifi
 ls -ltha
@@ -31,7 +31,7 @@ cd
 
 ## :computer: Instalación en una Línea
 ```bash
-sudo wget https://raw.githubusercontent.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi/refs/heads/main/install.sh -O - | sudo bash
+sudo wget https://raw.githubusercontent.com/dzh0ni/Hacking-Wifi/refs/heads/main/install.sh -O - | sudo bash
 ```
 
 ## :rocket: Modo de Uso
@@ -103,6 +103,4 @@ Las contribuciones son bienvenidas. Si tienes ideas para mejorar este script o e
 - Uso Responsable: Este script está diseñado para ser utilizado en dispositivos y redes que te pertenecen o para las que tienes permiso de uso. No lo utilices para actividades no autorizadas.
 
 ## :email: Contacto 
-* :busts_in_silhouette: **Dzhoni**: [GitHub](https://github.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi) - Desarrollador Hacking-Wifi
-
-☆ https://t.me/AAAAAEXQOSyIpN2JZ0ehUQ [  ⃘⃤꙰✰ ] ☆
+* :busts_in_silhouette: **Dzh0nini**: [GitHub](https://github.com/dzh0ni/Hacking-Wifi) - Desarrollador Hacking-Wifi
