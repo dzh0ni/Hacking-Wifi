@@ -1,98 +1,134 @@
-﻿![logo](https://github.com/dzh0ni/Hacking-Wifi/blob/main/Imagenes/hacking-wifi.png)
+﻿![logo](https://github.com/dzh0ni/evilTrust/blob/master/Imagenes/inicio.png)
 
-# Hacking-Wifi
-**Kali linux - drivers y herramientas para hacking Wifi**
+# EvilTrust by s4v1tar :octocat: 
 
-## :information_source: Descripción
-Kali linux - drivers y herramientas para hacking Wifi está diseñado para automatizar la 
-instalación y verificación de diversos controladores y herramientas esenciales para 
-la auditoría de seguridad de redes wifi. El objetivo principal es asegurar que todos 
-los componentes necesarios estén instalados y configurados correctamente para 
-realizar auditorías de redes wifi y pruebas de penetración.
+## :information_source: Descripción 
+EvilTrust 🕵️‍♂️ es un script avanzado de Bash diseñado para convertir un dispositivo Linux en un punto de acceso malicioso (*rogue AP*), ideal para pruebas de penetración y auditorías de seguridad WiFi. Este script permite capturar credenciales, interceptar tráfico, y realizar ataques de ingeniería social mediante la creación de redes falsas y portales cautivos.  
+
+EvilTrust ideal para el despliegue automatizado de un Rogue AP con capacidad de selección de plantilla + 2FA.
+
+Esta herramienta dispone de varias plantillas a utilizar, incluyendo una opción de plantilla personalizada, donde el atacante es capaz de desplegar su propia plantilla.
+
+IMPORTANTE: No es necesario contar con una conexión cableada, por lo que es posible desplegar el ataque desde cualquier lado en cualquier momento.
+
+La herramienta soporta dos modos de ejecución.
+
+- 🔧 Modo Terminal (CLI)
+- 🖥️ Modo Gráfico (GUI)
 
 ## :computer: Instalación
 ```bash
 cd /opt
-sudo rm -rf Hacking-Wifi
-sudo git clone https://github.com/dzh0ni/Hacking-Wifi.git
-sudo chmod +x Hacking-Wifi/*
-cd Hacking-Wifi
-ls -ltha
+sudo rm -rf evilTrust
+sudo git clone https://github.com/s4vitar/evilTrust.git
+cd evilTrust
+sudo chmod +x evilTrust.sh
+cd
 ```
 
 ## :key: Acceso Directo
 ```bash
 cd 
-sudo echo "cd /opt/Hacking-Wifi && sudo ./menu.sh" > hackingwifi
-sudo chmod +x hackingwifi
-sudo mv hackingwifi /usr/local/bin/
+sudo echo "cd && cd /opt/evilTrust && sudo ./evilTrust.sh -m terminal" > eviltrust
+sudo echo "cd && cd /opt/evilTrust && sudo ./evilTrust.sh -m gui" > eviltrustg
+sudo chmod +x eviltrust
+sudo chmod +x eviltrustg
+sudo rm -rf /usr/local/bin/eviltrust
+sudo rm -rf /usr/local/bin/eviltrustg
+sudo mv eviltrust /usr/local/bin/
+sudo mv eviltrustg /usr/local/bin/
 cd
+```
+
+## :package: Paquete
+```bash
+sudo apt-get -y update
+sudo apt-get install -y php
+sudo apt-get install -y dnsmasq
+sudo apt-get install -y hostapd
+```
+
+## :computer: Crear Desktop
+```bash
+sudo mkdir -p /usr/local/share/evilTrust/images
+sudo cp /opt/evilTrust/images/evil.png /usr/local/share/evilTrust/images/
+sudo chmod 644 /usr/local/share/evilTrust/images/evil.png
+```
+```bash
+sudo wget https://raw.githubusercontent.com/dzh0ni/evilTrust/master/Install/crear_evilTrust_desktop.sh -O - | sudo bash && sudo rm -rf wget-log*
 ```
 
 ## :computer: Instalación en una Línea
 ```bash
-sudo wget https://raw.githubusercontent.com/dzh0ni/Hacking-Wifi/refs/heads/main/install.sh -O - | sudo bash
+sudo wget https://raw.githubusercontent.com/dzh0ni/evilTrust/refs/heads/main/install.sh -O - | sudo bash && sudo rm -rf wget-log*
 ```
 
 ## :rocket: Modo de Uso
+  
+Ejecuta el script fácilmente ingresando el siguiente comando `eviltrust` o `eviltrustg` en tu terminal y presionando Enter.
 
-Ejecutar el scrip:
-
+**Modo por Terminal**
 ```bash
-hackingwifi
+eviltrust
 ```
 
-## :star2: Características y Funcionalidades Principales
+**Modo por Gui**
+```bash
+eviltrustg
+```
 
-1 - Comprobación de Permisos de Root:
+# 🛠️ Demos y Ejemplos
 
-* El script verifica si se está ejecutando con permisos de superusuario (root) y, en caso contrario, solicita que se ejecute con sudo.
+Aquí tienes algunos ejemplos de uso del script EvilTrust en acción:  
 
-2 - Actualización de Repositorios y Paquetes:
+### 1️⃣ **Tutorial detallado para el uso del script.
+Captura de credenciales mediante un entorno controlado.  
+![Github - s4vitar](https://github.com/dzh0ni/evilTrust/blob/master/Tutorial.md/)  
 
-* Opción para actualizar los repositorios (apt-get update).
-* Opción para actualizar los paquetes instalados (apt-get full-upgrade).
+> 🌐 **Nota**: Este script debe ser utilizado únicamente con fines éticos y en entornos donde tengas autorización explícita.
 
-3 - Instalación de Controladores de Red:
+## :bookmark_tabs: Notas
+  
+El script es ideal para:  
+- Auditorías de seguridad en redes WiFi.  
+- Simulación de ataques de ingeniería social.  
+- Captura de tráfico en entornos controlados.  
 
-* Instalación de controladores específicos para adaptadores de red Realtek, como rtl8188eus, rtl8188fu, y opcionalmente rtl8814au-dkms.
+## :star2: Características 
 
-4 - Configuración de Controladores de Audio:
+- Automatización total para pruebas de seguridad WiFi.  
+- Soporte para terminal e interfaz.  
+- Herramienta liviana y personalizable.  
 
-* Intenta configurar y activar los controladores de audio, asegurando la correcta funcionalidad del sonido en el sistema.
+## :hammer_and_wrench: Requisitos
+ 
+- **Sistema Operativo**: Linux (Kali Linux, ParotOS, Raspberry Pi OS, etc.)  
+- **Hardware**: Tarjeta WiFi compatible con modo monitor y AP. [Cards and Chipsets](https://github.com/v1s1t0r1sh3r3/airgeddon/wiki/Cards%20and%20Chipsets)  
+- **Dependencias**: 
+  - `php` 
+  - `hostapd`  
+  - `dnsmasq`  
+  - `iptables`  
 
-5 - Instalación y Verificación de Herramientas Esenciales y Opcionales:
-
-* Verificación e instalación de herramientas esenciales como git, aircrack-ng, wifite, hcxdumptool, pyrit, airgeddon, fluxion, entre otras.
-* Instalación de herramientas adicionales como sparrow-wifi, feedingbottle, lazyaircrack, y Wifi-Hack, entre otras.
-
-6 - Configuración y Creación de Diccionarios de Contraseñas:
-
-* Creación de un diccionario combinado a partir de múltiples fuentes de listas de contraseñas para usar en ataques de fuerza bruta.
-
-7 - Mostrar Información del Sistema:
-
-* Muestra la configuración de red, interfaces inalámbricas, dispositivos USB y capacidades inalámbricas del sistema.
-
-## :hammer_and_wrench: Requisitos 
--  Sistema Operativo: Kali Linux/Unix
-
-Este script es una herramienta poderosa para cualquier profesional de la seguridad 
-informática que utilice Kali Linux, ya que simplifica y automatiza muchas de las 
-tareas comunes de configuración y actualización necesarias para una auditorías de redes wifi y pruebas de penetración.
-
-## :open_file_folder: Estructura del Repositorio
+## 📂 Estructura del Repositorio
 
 | Icono            | Nombre              | Descripción                               |
 |------------------|---------------------|-------------------------------------------|
-| :file_folder:    | Desarrollador       | Carpeta de Desarrollador del proyecto     |
-| :file_folder:    | Herramientas        | Carpeta de herramientas extras            |
-| :file_folder:    | Imágenes            | Carpeta para imágenes del proyecto        |
-| :page_facing_up: | .gitattributes      | Archivo para configuración de Git         |
-| :page_facing_up: | LICENSE             | Archivo de licencia del proyecto          |
-| :book:           | README.md           | Archivo de documentación principal        |
-| :package:        | install.sh          | Script de instalación automatizada        |
-| :page_facing_up: | menu.sh             | Herramienta de utilidades                 |
+| :file_folder:    | Imagenes            | Carpeta que contiene imágenes del script en ejecución |
+| :package:        | install.sh          | Script de instalación automatizada |
+| :file_folder:    | all_in_one          | Plantilla Todo en Uno y mejoras generales. |
+| :file_folder:    | cliqq-payload       | Plantilla para payload APK malicioso.     |
+| :file_folder:    | facebook-login      | Plantilla de Facebook con 2FA operativo. |
+| :file_folder:    | google-login        | Segundo factor de autenticación para Google. |
+| :file_folder:    | images              | Modificaciones e imágenes del proyecto.   |
+| :file_folder:    | optimumwifi         | Plantillas de redes de optimumwifi.       |
+| :file_folder:    | starbucks-login     | Portal de Starbucks con 2FA operativo.    |
+| :file_folder:    | twitter-login       | Plantilla de Twitter con autenticación de dos factores. |
+| :file_folder:    | utilities           | Herramientas de conteo de víctimas conectadas. |
+| :file_folder:    | yahoo-login         | Plantilla de Yahoo con 2FA operativo.     |
+| :page_facing_up: | README.md           | Documentación principal del proyecto.     |
+| :page_facing_up: | Tutorial.md         | Tutorial detallado para el uso del script.|
+| :page_facing_up: | evilTrust.sh        | Script principal con mejoras recientes.   |
 
 ## :star2: Contribuciones
 
@@ -102,5 +138,10 @@ Las contribuciones son bienvenidas. Si tienes ideas para mejorar este script o e
 
 - Uso Responsable: Este script está diseñado para ser utilizado en dispositivos y redes que te pertenecen o para las que tienes permiso de uso. No lo utilices para actividades no autorizadas.
 
-## :email: Contacto 
-* :busts_in_silhouette: **Dzh0ni**: [Telegram](https://t.me/Dzh0ni_Dev) - Desarrollador Hacking-Wifi
+## :email: **Contacto** 
+Si tienes preguntas o sugerencias:  
+* :busts_in_silhouette: Contacta a ![s4vitar](https://github.com/s4vitar) - Desarrollador evilTrust
+* :busts_in_silhouette: **Dzh0ni**: [Telegram](https://t.me/Dzh0ni_Dev) - Adaptacion README.md 
+
+🌐 **Repositorio oficial**  
+![EvilTrust GitHub](https://github.com/s4vitar/evilTrust)
