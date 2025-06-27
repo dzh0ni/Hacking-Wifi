@@ -50,9 +50,9 @@ fast_process="${magenta}>>${green}"   # Para mostrar procesos rápidos o en ejec
 action_indicator="${red}==>${cyan}"   # Para indicar una acción o cambio en progreso
 
 # Barra de separación
-bar="${yellow}----------------------------------------------${reset}"
-bar2="${blue}----------------------------------------------${reset}"
-barra="${blue}|--------------------------------------------|${reset}"
+bar="${yellow}-----------------------------------------------------------------${reset}"
+bar2="${blue}-----------------------------------------------------------------${reset}"
+barra="${blue}|---------------------------------------------------------------|${reset}"
 
 # Función para manejar la salida eficiente
 trap ctrl_c INT
@@ -582,36 +582,35 @@ do
 clear
 fun_banner
 
+# Menú en dos columnas
 echo -e "\n${yellow}Seleccione una opción del menú:${reset}\n"
-echo -e "${blue}-------------- ( update ) --------------${reset}"
-echo -e "${green}R. ${white} Actualizar el sistema${reset}"
-echo -e "${green}P. ${white} Full-upgrade del sistema${reset}"
-echo -e "${blue}-------------- ( Diccionario ) --------------${reset}"
-echo -e "${green}D. ${white} Crear Diccionario personalizado${reset}"
-echo -e "${blue}-------------- ( Driver ) --------------${reset}"
-echo -e "${green}C. ${white} Paquetes Esenciales para Compilación${reset}"
-echo -e "${green}1. ${white} Driver rtl8188eus${reset}"
-echo -e "${green}2. ${white} Driver rtl8814au${reset}"
-echo -e "${green}3. ${white} Driver rtl8723cs${reset}"
-echo -e "${green}4. ${white} Driver rtl88xxau${reset}"
-echo -e "${green}5. ${white} Driver rtl8188fu${reset}"
-echo -e "${blue}-------------- ( Tool ) --------------${reset}"
-echo -e "${green}6. ${white} Tool Wifite${reset}"
-echo -e "${green}7. ${white} Tool Airgeddon${reset}"
-echo -e "${green}8. ${white} Tool Fluxion${reset}"
-echo -e "${green}9. ${white} Tool Sparrow-wifi${reset}"
-echo -e "${green}10.${white} Tool Feedingbottle${reset}"
-echo -e "${green}11.${white} Tool Handshaker${reset}"
-echo -e "${green}12.${white} Tool lazyaircrack${reset}"
-echo -e "${blue}-------------- ( Audio ) --------------${reset}"
-echo -e "${green}13.${white} Forces Audio${reset}"
-echo -e "${blue}-------------- ( Check ) --------------${reset}"
-echo -e "${green}14.${white} Check extras${reset}"
-echo -e "${green}15.${white} Información del Sistema y Red${reset}"
+echo -e "${blue}--- ( update )      ---------------------------------------------${reset}"
+printf "${green}R. ${white}Actualizar el sistema\t${green}P. ${white}Full-upgrade del sistema${reset}\n"
+
+echo -e "${blue}--- ( Diccionario ) ---------------------------------------------${reset}"
+printf "${green}D. ${white}Crear Diccionario personalizado\t\t${reset}\n"
+
+echo -e "${blue}--- ( Driver )      ---------------------------------------------${reset}"
+printf "${green}C. ${white}Paquetes Compilación\t\t${green}1. ${white}Driver rtl8188eus${reset}\n"
+printf "${green}2. ${white}Driver rtl8814au\t\t${green}3. ${white}Driver rtl8723cs${reset}\n"
+printf "${green}4. ${white}Driver rtl88xxau\t\t${green}5. ${white}Driver rtl8188fu${reset}\n"
+
+echo -e "${blue}--- ( Tool )        ---------------------------------------------${reset}"
+printf "${green}6. ${white}Tool Wifite\t\t\t${green}7. ${white}Tool Airgeddon${reset}\n"
+printf "${green}8. ${white}Tool Fluxion\t\t\t${green}9. ${white}Tool Sparrow-wifi${reset}\n"
+printf "${green}10.${white}Tool Feedingbottle\t\t${green}11.${white}Tool Handshaker${reset}\n"
+printf "${green}12.${white}Tool lazyaircrack${reset}\n"
+
+echo -e "${blue}--- ( Audio )       ---------------------------------------------${reset}"
+printf "${green}13.${white}Forces Audio${reset}\n"
+
+echo -e "${blue}--- ( Check )       ---------------------------------------------${reset}"
+printf "${green}14.${white}Check extras\t\t\t${green}15.${white}Info del Sistema y Red${reset}\n"
+
 echo -e "${bar}"
-echo -e "${green}16 $versionSCT${reset}"
+printf "${green}16 ${white}$versionSCT${reset}\n"
 echo -e "${bar}"
-echo -e "${green}0  ${white}Salir${reset}"
+printf "${green}0  ${white}Salir${reset}\n"
 echo -e "\n${barra}"
 
 echo -ne "\n${bold}${yellow} Elige una opción:${white} >> "; read x
