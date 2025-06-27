@@ -1,10 +1,10 @@
 #!/bin/bash
 #====================================================
 #   SCRIPT:                   Hacking-Wifi | Kali linux - drivers y herramientas para hacking Wifi
-#   DESARROLLADO POR:         Jony Rivera (Dzhoni)
+#   DESARROLLADO POR:         Jony Rivera (dZh0ni)
 #   FECHA DE ACTUALIZACIÓN:   07-05-2024  
-#   CONTACTO POR TELEGRAMA:   https://t.me/Dzhoni_dev
-#   GITHUB OFICIAL:           https://github.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi
+#   CONTACTO POR TELEGRAMA:   https://t.me/dZh0ni_Dev
+#   GITHUB OFICIAL:           https://github.com/dzh0ni/Hacking-Wifi
 #====================================================
 x="ok"
 
@@ -37,22 +37,34 @@ bg_magenta="\033[0;45m"   # Fondo Magenta
 bg_cyan="\033[0;46m"      # Fondo Cian
 bg_white="\033[0;47m"     # Fondo Blanco
 
-# Iconos v3
-checkmark="${white}[${green}+${white}]${green}"
-error="${white}[${red}-${white}]${red}"
-info="${white}[${yellow}*${white}]${yellow}"
-unknown="${white}[${blue}!${white}]${blue}"
-process="${white}[${magenta}>>${white}]${magenta}"
-indicator="${red}==>${cyan}"
+# Iconos v0  
+checkmark="${white}[${green}+${white}]${green}"     # Acción exitosa o algo encontrado
+error="${white}[${red}-${white}]${red}"             # Error o acción fallida
+info="${white}[${yellow}*${white}]${yellow}"        # nformación o proceso en curso
+warning="${white}[${blue}!${white}]${blue}"         # Advertencia o estado desconocido
+loading="${white}[${magenta}~${white}]${magenta}"   # Indicador de proceso en ejecución
+indicator="${white}[${cyan}>${white}]${cyan}"       # Indicador general
+
+# Iconos v0 Especial
+fast_process="${magenta}>>${green}"   # Para mostrar procesos rápidos o en ejecución inmediata
+action_indicator="${red}==>${cyan}"   # Para indicar una acción o cambio en progreso
 
 # Barra de separación
-barra="${blue}|--------------------------------------------|${reset}"
 bar="${yellow}----------------------------------------------${reset}"
+bar2="${blue}----------------------------------------------${reset}"
+barra="${blue}|--------------------------------------------|${reset}"
 
-# Comprobación de permisos de root
+# Función para manejar la salida eficiente
+trap ctrl_c INT
+ctrl_c() {
+  echo -e "\n\n${error} Interrupción detectada. Saliendo...${reset}"
+  exit 1
+}
+
+# Comprobación de permisos de root v1
 [[ "$(whoami)" != "root" ]] && {
-    echo -e "\n${error} ${white}- ${yellow}Necesitas ejecutar esto como administrador ${white}(${red}root${yellow}${white})${yellow}. ${reset}"
-    echo -e "\n${info} ${green}sudo $0 ${reset}"
+    echo -e "\n${error} ${yellow}Necesitas ejecutar este script como administrador ${white}(${red}root${white})${reset}."
+    echo -e "\n${info} ${green}Intenta: sudo $0${reset}"
     exit 0
 }
 
@@ -67,7 +79,7 @@ fun_banner() {
     echo -e "          \   \_ \`  -+-  \` _/   / "
     echo -e "           \`-       -+-       -\` "
     echo -e "                    -+-   ${cyan}Kali linux - drivers  y herramientas para hacking Wifi${reset}"
-    echo -e "                          ${green}Version codificada por: Jony Rivera (Dzhoni)${reset}"
+    echo -e "                          ${green}Version codificada por: Jony Rivera (dZh0ni)${reset}"
     echo ""
 }
 
@@ -482,7 +494,7 @@ function forces_audio() {
 function check_extras() {
    echo -e "\n${info} Check extras.......${reset}"
 
-    # essential_tools=("aircrack-ng" "airgeddon" "cowpatty" "mdk3" "pixiewps" "reaver" "sparrow-wifi" "fern-wifi-cracker" "wireshark" "kismet" "eaphammer" "wifi-honey" "routersploit" "wifite" "xterm")
+    # essential_tools=("aircrack-ng" "airgeddon" "cewl" "cowpatty" "mdk3" "pixiewps" "reaver" "sparrow-wifi" "fern-wifi-cracker" "wireshark" "kismet" "eaphammer" "wifi-honey" "routersploit" "wifite" "xterm" "john" "hashcat")
 
     essential_tools=(
     "aircrack-ng" 
@@ -491,6 +503,7 @@ function check_extras() {
     "bc" 
     "bettercap" 
     "bully" 
+    "cewl"
     "cowpatty" 
     "curl" 
     "crunch" 
@@ -510,6 +523,7 @@ function check_extras() {
     "killall" 
     "kismet" 
     "lighttpd" 
+    "john"
     "mdk3" 
     "mdk4" 
     "nmap" 
