@@ -14,7 +14,7 @@ realizar auditorías de redes wifi y pruebas de penetración.
 ```bash
 cd /opt
 sudo rm -rf Hacking-Wifi
-sudo git clone https://github.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi.git
+sudo git clone https://github.com/dzh0ni/Hacking-Wifi.git
 sudo chmod +x Hacking-Wifi/*
 cd Hacking-Wifi
 ls -ltha
@@ -29,9 +29,9 @@ sudo mv hackingwifi /usr/local/bin/
 cd
 ```
 
-## :computer: Instalación en una Línea
+## :computer: Instalación en una Línea (Solo script)
 ```bash
-sudo wget https://raw.githubusercontent.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi/refs/heads/main/install.sh -O - | sudo bash
+sudo wget https://raw.githubusercontent.com/dzh0ni/Hacking-Wifi/refs/heads/main/install.sh -O - | sudo bash && sudo rm -rf wget-log*
 ```
 
 ## :rocket: Modo de Uso
@@ -42,7 +42,7 @@ Ejecutar el scrip:
 hackingwifi
 ```
 
-## :star2: Características y Funcionalidades Principales
+## :star2: Características 
 
 1 - Comprobación de Permisos de Root:
 
@@ -74,7 +74,8 @@ hackingwifi
 
 * Muestra la configuración de red, interfaces inalámbricas, dispositivos USB y capacidades inalámbricas del sistema.
 
-## :hammer_and_wrench: Requisitos 
+## :hammer_and_wrench: Requisitos
+
 -  Sistema Operativo: Kali Linux/Unix
 
 Este script es una herramienta poderosa para cualquier profesional de la seguridad 
@@ -85,9 +86,9 @@ tareas comunes de configuración y actualización necesarias para una auditoría
 
 | Icono            | Nombre              | Descripción                               |
 |------------------|---------------------|-------------------------------------------|
-| :file_folder:    | Desarrollador       | Carpeta de Desarrollador del proyecto     |
 | :file_folder:    | Herramientas        | Carpeta de herramientas extras            |
 | :file_folder:    | Imágenes            | Carpeta para imágenes del proyecto        |
+| :file_folder:    | Install             | Carpeta para scripts de instalación       |
 | :page_facing_up: | .gitattributes      | Archivo para configuración de Git         |
 | :page_facing_up: | LICENSE             | Archivo de licencia del proyecto          |
 | :book:           | README.md           | Archivo de documentación principal        |
@@ -102,7 +103,6 @@ Las contribuciones son bienvenidas. Si tienes ideas para mejorar este script o e
 
 - Uso Responsable: Este script está diseñado para ser utilizado en dispositivos y redes que te pertenecen o para las que tienes permiso de uso. No lo utilices para actividades no autorizadas.
 
-## :email: Contacto 
-* :busts_in_silhouette: **Dzhoni**: [GitHub](https://github.com/AAAAAEXQOSyIpN2JZ0ehUQ/Hacking-Wifi) - Desarrollador Hacking-Wifi
-
-☆ https://t.me/AAAAAEXQOSyIpN2JZ0ehUQ [  ⃘⃤꙰✰ ] ☆
+## :email: **Contacto** 
+Si tienes preguntas o sugerencias:  
+* :busts_in_silhouette: **dZh0ni**: [Telegram](https://t.me/dZh0ni_Dev) - Desarrollador Hacking-Wifi
